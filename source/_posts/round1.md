@@ -1,13 +1,23 @@
 ---
 title: 牛客周赛 Round 1
+mathjax: true
+categories: # 分类
+    - 算法竞赛  # 只能有一个
+tags:
+- 软件测试
+- 符号执行
+- 牛客
 ---
+
 
 # 牛客周赛 Round 1
 - 题目: https://ac.nowcoder.com/acm/contest/60245#question
 - 题解: https://blog.nowcoder.net/n/b47135dffd0e47a4a0f76e0195d689e7
+<!-- more -->
 
 ## T1
 模拟
+
 
 ## T2
 统计相同的数字两种颜色分别有多少个位置，乘起来即可
