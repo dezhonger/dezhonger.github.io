@@ -19,7 +19,7 @@ sol1:
 两个树状数组，分别维护0的位置和1的位置。每次计算的时候，即求0前面有多少个1(或者1前面有多少个0), 当前位置计算后，在树状数组里删掉
 
 sol2:
-直接贪心, $$sigma(abs(expectPosition_{i} - current_{i}))$$
+直接贪心, $sigma(abs(expectPosition_{i} - current_{i}))$
 ```
 void solve() {
     string s;
