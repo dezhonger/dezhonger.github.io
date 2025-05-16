@@ -8,7 +8,8 @@ tags:
 ---
 
 ## 我是谁
-todo
+![imageTitle](/images/1.png)
+
 
 ## 学生生涯
 

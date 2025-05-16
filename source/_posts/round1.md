@@ -1,5 +1,6 @@
 ---
 title: 牛客周赛 Round 1
+date: 2025-5-17 
 mathjax: true
 categories: # 分类
     - 算法竞赛  # 只能有一个
@@ -29,7 +30,9 @@ sol1:
 两个树状数组，分别维护0的位置和1的位置。每次计算的时候，即求0前面有多少个1(或者1前面有多少个0), 当前位置计算后，在树状数组里删掉
 
 sol2:
-直接贪心, $sigma(abs(expectPosition_{i} - current_{i}))$
+
+$\sum abs(expectPos-actualPos)$
+
 ```
 void solve() {
     string s;
@@ -60,8 +63,10 @@ void solve() {
 DP:
 
 sol1:
-f[i][j] 以第i个位置结尾，余数是j的序列个数, f[i][j]  <- sum(f[k][x](k < i, (k*10+s[i]-'0')%9==j),
-表示把前面的以x结尾的序列后面加上s[i], 用前缀和维护一下(<i)的按照余数分类的总个数, 时间复杂度O(N)
+$f[i][j]$ 以第 $i$ 个位置结尾，余数是 $j$ 的序列个数  
+$f[i][j] = \sum_{k < i} f[k][x],$ 其中满足 $ \left( (k \times 10 + (s[i]))mod9=j \right)$
+表示把前面的以$x$结尾的序列后面加上$s[i]$, 用前缀和维护一下($i$的按照余数分类的总个数, 时间复杂度$O(N)$
+
 
 ```
 const int mod = 1e9 + 7;
