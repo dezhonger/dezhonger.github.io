@@ -1,22 +1,28 @@
 ---
-title: 123
-date: 2025-03-13 15:21:30
-categories: # 分类
-    - 个人生活c  # 只能有一个
+title: Who am I?
+date: 2025-5-20 19:24:31
+categories:
+    - 个人生活
 tags:
-- 个人生活t
+    - 个人
+    - 自我介绍
 ---
 
 ## 我是谁
-![imageTitle](/images/1.png)
-
+<!-- ![imageTitle](/images/1.png) -->
 
 ## 学生生涯
 
 ## 工作经历
 
-## 技术栈
-
 ## 个人爱好
 
 ## 联系方式
+
+qq: 373440955
+email: csdisassembly@gmail.com
+
+
+
+希望能做一点微小的贡献
+希望可以成为一个有价值的人
