@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="contest info Contest Link Problem ID: 3556-3559 Difficult: Medium-Medium-Medium-Hard">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Biweekly Contest 157">
+<meta property="og:url" content="http://example.com/2025/05/26/Leetcode/B157/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="contest info Contest Link Problem ID: 3556-3559 Difficult: Medium-Medium-Medium-Hard">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-05-26T08:12:28.000Z">
+<meta property="article:modified_time" content="2025-05-26T08:14:53.585Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Algorithm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/05/26/Leetcode/B157/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2025/05/26/Leetcode/B157/","path":"2025/05/26/Leetcode/B157/","title":"Biweekly Contest 157"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Biweekly Contest 157 | Hexo</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#contest-info"><span class="nav-number">1.</span> <span class="nav-text">contest info</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#T1"><span class="nav-number">1.1.</span> <span class="nav-text">T1:</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#T2"><span class="nav-number">1.2.</span> <span class="nav-text">T2</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#T3"><span class="nav-number">1.3.</span> <span class="nav-text">T3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#T4"><span class="nav-number">1.4.</span> <span class="nav-text">T4</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">John Doe</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/05/26/Leetcode/B157/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="John Doe">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Biweekly Contest 157 | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Biweekly Contest 157
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-05-26 16:12:28 / Modified: 16:14:53" itemprop="dateCreated datePublished" datetime="2025-05-26T16:12:28+08:00">2025-05-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/LeetCode/" itemprop="url" rel="index"><span itemprop="name">LeetCode</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="contest-info"><a href="#contest-info" class="headerlink" title="contest info"></a>contest info</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://leetcode.com/contest/biweekly-contest-157/">Contest Link</a></li>
+<li>Problem ID: 3556-3559</li>
+<li>Difficult: Medium-Medium-Medium-Hard</li>
+</ul>
+<span id="more"></span>
+<ul>
+<li>题目分布</li>
+</ul>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>题号</th>
+<th>题目标签</th>
+<th>通过状态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>素数判断</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>2</td>
+<td>贪心, dp</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>3</td>
+<td>dp</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>4</td>
+<td>kruskal,dsu</td>
+<td>✅</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="T1"><a href="#T1" class="headerlink" title="T1:"></a>T1:</h2><h2 id="T2"><a href="#T2" class="headerlink" title="T2"></a>T2</h2><p>sol1:<br>贪心地想，这个子串的右端点越小越好，这样后面能选的子串就越多。</p>
+<p>选了右端点为 i 的子串后，问题变成从 [i+1,n−1] 中能选多少个子串，这是一个和原问题相似，规模更小的子问题。可以递归/迭代解决。</p>
+<p>sol2:<br>f[i]以 i 结尾的最大划分数<br>$f[i]=max(f[j])+1$, 其中 i 和 j 表示的是相同的字母,且$i-j&gt;=3$</p>
+<p>时间复杂度 O$(N)$</p>
+<h2 id="T3"><a href="#T3" class="headerlink" title="T3"></a>T3</h2><p>首先选哪个是不影响答案的, 假设深度最深是$x$(根节点深度是$1$), 那么路径上的边数是$x-1$, 我们记为$n=x-1$<br>题目要求边权重之和是奇数, 等价于要选奇数条边的权值是 1, 也即是说答案是</p>
+<script type="math/tex; mode=display">\binom{n}{1}+\binom{n}{3}+\binom{n}{5}+...=\sum_{i是奇数}\binom{n}{i}</script><p>对于这个题目来说,预处理出阶乘和逆,然后直接算就可以了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">typedef long long LL;</span><br><span class="line">typedef unsigned long long ULL;</span><br><span class="line"></span><br><span class="line">constexpr int mod = 1&#x27;000&#x27;000&#x27;007;</span><br><span class="line">constexpr int maxn = 100000 + 13;</span><br><span class="line">int f[maxn], g[maxn];</span><br><span class="line"></span><br><span class="line">void factorial() &#123;</span><br><span class="line">    memset(f, 0, sizeof(f));</span><br><span class="line">    memset(g, 0, sizeof(g));</span><br><span class="line">    for (int i = 0; i &lt; maxn; i += 1)</span><br><span class="line">        f[i] = i ? 1LL * f[i - 1] * i % mod : 1;</span><br><span class="line">    for (int i = 1; i &lt; maxn; i += 1)</span><br><span class="line">        g[i] = i == 1 ? 1 : 1LL * (mod - mod / i) * g[mod % i] % mod;</span><br><span class="line">    for (int i = 0; i &lt; maxn; i += 1)</span><br><span class="line">        g[i] = g[i] ? 1LL * g[i - 1] * g[i] % mod : 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 组合数</span><br><span class="line">LL comb(int n, int m) &#123;</span><br><span class="line">    if (n &lt; m || n &lt; 0 || m &lt; 0)</span><br><span class="line">        return 0;</span><br><span class="line">    return 1LL * f[n] * g[m] % mod * g[n - m] % mod;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    int assignEdgeWeights(vector&lt;vector&lt;int&gt;&gt;&amp; edges) &#123;</span><br><span class="line">        factorial();</span><br><span class="line">        int n = edges.size();</span><br><span class="line">        vector&lt;vector&lt;int&gt;&gt; g(n + 1);</span><br><span class="line">        for (auto&amp; e : edges) &#123;</span><br><span class="line">            int u = e[0], v = e[1];</span><br><span class="line">            u--, v--;</span><br><span class="line">            g[u].push_back(v);</span><br><span class="line">            g[v].push_back(u);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        int ans = 0;</span><br><span class="line">        auto dfs = [&amp;](auto&amp;&amp; dfs, int u, int fa, int d) -&gt; void &#123;</span><br><span class="line">            ans = max(ans, d);</span><br><span class="line">            for (int v : g[u]) &#123;</span><br><span class="line">                if (v == fa)</span><br><span class="line">                    continue;</span><br><span class="line">                dfs(dfs, v, u, d + 1);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        dfs(dfs, 0, -1, 1);</span><br><span class="line">        int x = ans - 1;</span><br><span class="line">        // res = C(n, 1) + C(n, 3) + ...</span><br><span class="line">        LL res = 0;</span><br><span class="line">        for (int i = 1; i &lt;= x; i += 2) &#123;</span><br><span class="line">            res += comb(x, i);</span><br><span class="line">            res %= mod;</span><br><span class="line">        &#125;</span><br><span class="line">        return res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="T4"><a href="#T4" class="headerlink" title="T4"></a>T4</h2><p>题目是 T3 的加强版,多组询问<br>思路和 T3 一样,多组询问的话.我们可以通过求$LCA$, 然后$u和v$的路径长度</p>
+<script type="math/tex; mode=display">dist(u, v)=dist(root, u)+dist(root, v)-2*dist(root, lca(u, v))</script><p>单组求和我们通过数学技巧优化组合计算, 时间复杂度为$O(logN)$</p>
+<p>利用二项式定理的一些简单变形，可以很快得到下面优美的结果：</p>
+<script type="math/tex; mode=display">
+\sum_{\substack{k=1\\k\ \text{奇}}}^{n} \binom{n}{k}
+=\frac{(1+1)^n - (1-1)^n}{2}
+=\frac{2^n - 0}{2}
+=2^{\,n-1}.</script><ol>
+<li>$(1+1)^n=\displaystyle\sum_{k=0}^n\binom{n}{k}$ —— 所有项之和。</li>
+<li>$(1-1)^n=\displaystyle\sum_{k=0}^n\binom{n}{k}(-1)^k$ —— 奇数项带负号，偶数项带正号。</li>
+<li><p>将二式相减：</p>
+<script type="math/tex; mode=display">
+(1+1)^n - (1-1)^n
+=\sum_{k=0}^n\binom{n}{k}\bigl[1-(-1)^k\bigr]
+=2\sum_{\substack{k=0\\k\ \text{奇}}}^n\binom{n}{k}.</script></li>
+<li><p>因此，奇数项之和＝$\bigl((1+1)^n - (1-1)^n\bigr)/2 =2^{n-1}$。</p>
+</li>
+</ol>
+<hr>
+<p><strong>结论</strong>：</p>
+<script type="math/tex; mode=display">
+\boxed{\sum_{k\text{ 奇}} \binom{n}{k} = 2^{\,n-1}.}</script><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;bits/stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">#ifdef LOCAL</span><br><span class="line">#include &quot;C:\zwl\files\docs\debug.h&quot;</span><br><span class="line">#else</span><br><span class="line">#define debug(...) 42</span><br><span class="line">#endif</span><br><span class="line">typedef long long LL;</span><br><span class="line">typedef unsigned long long ULL;</span><br><span class="line"></span><br><span class="line">const LL mod = 1e9 + 7;</span><br><span class="line">LL powmod(LL a, LL b) &#123;</span><br><span class="line">    LL res = 1;</span><br><span class="line">    a %= mod;</span><br><span class="line">    assert(b &gt;= 0);</span><br><span class="line">    for (; b; b &gt;&gt;= 1) &#123;</span><br><span class="line">        if (b &amp; 1)</span><br><span class="line">            res = res * a % mod;</span><br><span class="line">        a = a * a % mod;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 2**17 &gt;= MAXN</span><br><span class="line">static const int MAXN = 100005;</span><br><span class="line">static const int LOG = 17;</span><br><span class="line"></span><br><span class="line">int n;                             // 节点个数</span><br><span class="line">vector&lt;pair&lt;int, int&gt;&gt; adj[MAXN];  // 图的边表示</span><br><span class="line">int up[LOG + 1][MAXN];             // 倍增数组</span><br><span class="line">int depth[MAXN];                   // 深度数组, 0是根节点 depth[0]=0;</span><br><span class="line">long long dist0[MAXN];             // 根节点到每个节点的距离</span><br><span class="line">class Solution &#123;</span><br><span class="line">   public:</span><br><span class="line">    void dfs(int u, int p) &#123;</span><br><span class="line">        up[0][u] = p;</span><br><span class="line">        for (auto&amp; e : adj[u]) &#123;</span><br><span class="line">            int v = e.first, w = e.second;</span><br><span class="line">            if (v == p)</span><br><span class="line">                continue;</span><br><span class="line">            depth[v] = depth[u] + 1;</span><br><span class="line">            dist0[v] = dist0[u] + w;</span><br><span class="line">            dfs(v, u);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    int lca0(int u, int v) &#123;</span><br><span class="line">        if (depth[u] &lt; depth[v])</span><br><span class="line">            swap(u, v);</span><br><span class="line">        int diff = depth[u] - depth[v];</span><br><span class="line">        for (int k = 0; k &lt;= LOG; ++k) &#123;</span><br><span class="line">            if (diff &amp; (1 &lt;&lt; k)) &#123;</span><br><span class="line">                u = up[k][u];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (u == v)</span><br><span class="line">            return u;</span><br><span class="line">        for (int k = LOG; k &gt;= 0; --k) &#123;</span><br><span class="line">            if (up[k][u] != up[k][v]) &#123;</span><br><span class="line">                u = up[k][u];</span><br><span class="line">                v = up[k][v];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return up[0][u];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // u, v 是节点编号, 返回 u, v 之间的距离</span><br><span class="line">    long long dist(int u, int v) &#123;</span><br><span class="line">        int w = lca0(u, v);</span><br><span class="line">        return dist0[u] + dist0[v] - 2LL * dist0[w];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    void lca_init(vector&lt;vector&lt;int&gt;&gt;&amp; edges) &#123;</span><br><span class="line">        n = edges.size() + 1;  // 节点个数是边的数 +1</span><br><span class="line">        for (int i = 1; i &lt;= n; ++i) &#123;</span><br><span class="line">            adj[i].clear();</span><br><span class="line">        &#125;</span><br><span class="line">        for (auto&amp; e : edges) &#123;</span><br><span class="line">            int u = e[0], v = e[1], w = 1;</span><br><span class="line">            adj[u].emplace_back(v, w);</span><br><span class="line">            adj[v].emplace_back(u, w);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        memset(up, 0, sizeof(up));</span><br><span class="line">        memset(depth, 0, sizeof(depth));</span><br><span class="line">        memset(dist0, 0, sizeof(dist0));</span><br><span class="line">        depth[0] = 0;</span><br><span class="line">        dist0[0] = 0;</span><br><span class="line"></span><br><span class="line">        dfs(1, 0);  // 求出 depth 和 dist0</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        // 预处理 up 数组</span><br><span class="line">        for (int k = 1; k &lt;= LOG; ++k) &#123;</span><br><span class="line">            for (int v = 1; v &lt;= n; ++v) &#123;</span><br><span class="line">                up[k][v] = up[k - 1][up[k - 1][v]];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;int&gt; assignEdgeWeights(vector&lt;vector&lt;int&gt;&gt;&amp; edges, vector&lt;vector&lt;int&gt;&gt;&amp; queries) &#123;</span><br><span class="line">        lca_init(edges);</span><br><span class="line"></span><br><span class="line">        int q = queries.size();</span><br><span class="line">        vector&lt;int&gt; ans(q);</span><br><span class="line">        for (int i = 0; i &lt; q; ++i) &#123;</span><br><span class="line">            int u = queries[i][0], v = queries[i][1];</span><br><span class="line">            int d = dist(u, v);</span><br><span class="line">            ans[i] = (d == 0 ? 0 : powmod(2, d - 1));</span><br><span class="line">        &#125;</span><br><span class="line">        return ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/05/23/Project%20Euler/PE248/" rel="prev" title="PE248">
+                  <i class="fa fa-chevron-left"></i> PE248
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">John Doe</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"mhchem":true,"tags":"ams","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
