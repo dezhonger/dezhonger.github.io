@@ -52,7 +52,119 @@
   <noscript>
     <link rel="stylesheet" href="/css/noscript.css">
   </noscript>
-</head>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
 
 <body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
   <div class="headband"></div>
@@ -239,97 +351,75 @@ K 个</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-li
         <h2 id="题目">题目</h2>
 <p>The first number <span class="math inline"><em>n</em></span> for
 which <span class="math inline"><em>ϕ</em>(<em>n</em>) = 13!</span> is
-<span class="math inline">6227180929</span>. Find the <span
-class="math inline">150, 000</span><sup>th</sup> such number.</p>
+<span class="math inline">6227180929</span>. Find the <span class="math inline">150, 000</span><sup>th</sup> such number.</p>
 <p>找到欧拉函数值是13!的第150000个数 <span id="more"></span></p>
 <h2 id="题解">题解</h2>
-<hr />
-<p><span
-class="math display"><em>ϕ</em>(<em>n</em>) = 13! = 6227020800</span></p>
-<p>的第 <span class="math inline">150 000</span> 个最小的正整数 <span
-class="math inline"><em>n</em></span>。
-由于欧拉函数不是单调的，不能直接逆推，因此必须通过构造所有满足 <span
-class="math inline"><em>ϕ</em>(<em>n</em>) = 6227020800</span>
+<hr>
+<p><span class="math display"><em>ϕ</em>(<em>n</em>) = 13! = 6227020800</span></p>
+<p>的第 <span class="math inline">150 000</span> 个最小的正整数 <span class="math inline"><em>n</em></span>。
+由于欧拉函数不是单调的，不能直接逆推，因此必须通过构造所有满足 <span class="math inline"><em>ϕ</em>(<em>n</em>) = 6227020800</span>
 的数，然后排序取第 150000 个。</p>
-<hr />
+<hr>
 <h2 id="核心思路">核心思路</h2>
-<h3 id="分析phin-phip_1e_1-times-phip_2e_2-times-dots">1. 分析：<span
-class="math inline"><em>ϕ</em>(<em>n</em>) = <em>ϕ</em>(<em>p</em><sub>1</sub><sup><em>e</em><sub>1</sub></sup>) × <em>ϕ</em>(<em>p</em><sub>2</sub><sup><em>e</em><sub>2</sub></sup>) × …</span></h3>
+<h3 id="分析phin-phip_1e_1-times-phip_2e_2-times-dots">1. 分析：<span class="math inline"><em>ϕ</em>(<em>n</em>) = <em>ϕ</em>(<em>p</em><sub>1</sub><sup><em>e</em><sub>1</sub></sup>) × <em>ϕ</em>(<em>p</em><sub>2</sub><sup><em>e</em><sub>2</sub></sup>) × …</span></h3>
 <p>欧拉函数是 <strong>积性函数</strong>，对所有互素的因子满足：</p>
-<p><span
-class="math display"><em>ϕ</em>(<em>p</em><sup><em>e</em></sup>) = <em>p</em><sup><em>e</em></sup> − <em>p</em><sup><em>e</em> − 1</sup> = <em>p</em><sup><em>e</em> − 1</sup> ⋅ (<em>p</em> − 1)</span></p>
+<p><span class="math display"><em>ϕ</em>(<em>p</em><sup><em>e</em></sup>) = <em>p</em><sup><em>e</em></sup> − <em>p</em><sup><em>e</em> − 1</sup> = <em>p</em><sup><em>e</em> − 1</sup> ⋅ (<em>p</em> − 1)</span></p>
 <p>所以:</p>
-<p><span
-class="math display"><em>ϕ</em>(<em>n</em>) = ∏<sub><em>i</em></sub><em>p</em><sub><em>i</em></sub><sup><em>e</em><sub><em>i</em></sub> − 1</sup> ⋅ (<em>p</em> − 1)</span></p>
-<hr />
+<p><span class="math display"><em>ϕ</em>(<em>n</em>) = ∏<sub><em>i</em></sub><em>p</em><sub><em>i</em></sub><sup><em>e</em><sub><em>i</em></sub> − 1</sup> ⋅ (<em>p</em> − 1)</span></p>
+<hr>
 <h2 id="逐步解释">逐步解释</h2>
-<hr />
+<hr>
 <h3 id="第-0-步预设和基础定义">第 0 步：预设和基础定义</h3>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> ull M = <span class="number">6227020800ULL</span>;  <span class="comment">// 13!</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> K = <span class="number">150000</span>;         <span class="comment">// 第 150000 个目标</span></span><br></pre></td></tr></table></figure>
-<p>目标是 <span
-class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em> = 13!</span>，我们要找第
+<p>目标是 <span class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em> = 13!</span>，我们要找第
 K 个这样的 <span class="math inline"><em>n</em></span>。</p>
-<hr />
+<hr>
 <h3 id="第-1-步构造所有可能的素因子包括大素数">第 1
 步：构造所有可能的素因子（包括大素数）</h3>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;ull, <span class="type">int</span>&gt;&gt; factor = &#123;</span><br><span class="line">    &#123;<span class="number">2</span>, <span class="number">10</span>&#125;, &#123;<span class="number">3</span>, <span class="number">5</span>&#125;, &#123;<span class="number">5</span>, <span class="number">2</span>&#125;, &#123;<span class="number">7</span>, <span class="number">1</span>&#125;, &#123;<span class="number">11</span>, <span class="number">1</span>&#125;, &#123;<span class="number">13</span>, <span class="number">1</span>&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;ull, <span class="type">int</span>&gt;&gt; factor = {</span><br><span class="line">    {<span class="number">2</span>, <span class="number">10</span>}, {<span class="number">3</span>, <span class="number">5</span>}, {<span class="number">5</span>, <span class="number">2</span>}, {<span class="number">7</span>, <span class="number">1</span>}, {<span class="number">11</span>, <span class="number">1</span>}, {<span class="number">13</span>, <span class="number">1</span>}</span><br><span class="line">};</span><br></pre></td></tr></table></figure>
 <p>这些是 <span class="math inline">13!</span> 的素因子。</p>
 <p>然后我们生成所有正整数 <span class="math inline"><em>d</em></span>
 使得 <span class="math inline"><em>d</em> ∣ <em>M</em></span>，并尝试
 <span class="math inline"><em>p</em> = <em>d</em> + 1</span>，因为：</p>
 <blockquote>
-<p>若 <span class="math inline"><em>p</em></span> 是素数，且 <span
-class="math inline"><em>ϕ</em>(<em>p</em>) = <em>p</em> − 1 ∣ <em>M</em></span>，那么
+<p>若 <span class="math inline"><em>p</em></span> 是素数，且 <span class="math inline"><em>ϕ</em>(<em>p</em>) = <em>p</em> − 1 ∣ <em>M</em></span>，那么
 <span class="math inline"><em>p</em></span> 是一个可能的因子。</p>
 </blockquote>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ull p = d + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span> (p &gt; <span class="number">13</span> &amp;&amp; <span class="built_in">isPrime</span>(p)) &#123;</span><br><span class="line">    primes.<span class="built_in">push_back</span>(p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ull p = d + <span class="number">1</span>;</span><br><span class="line"><span class="keyword">if</span> (p &gt; <span class="number">13</span> &amp;&amp; <span class="built_in">isPrime</span>(p)) {</span><br><span class="line">    primes.<span class="built_in">push_back</span>(p);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 <p>这些大素数是将来构造候选 <span class="math inline"><em>n</em></span>
 的关键。</p>
-<hr />
+<hr>
 <h3 id="第-2-步为每个素数构造块block">第 2
 步：为每个素数构造「块」(block)</h3>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;ull, ull&gt;&gt; <span class="built_in">build_block</span>(ull p) &#123;</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; res = &#123;&#123;<span class="number">1</span>, <span class="number">1</span>&#125;&#125;;</span><br><span class="line">    ull pk = p, phi = p - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (phi &lt;= M &amp;&amp; M % phi == <span class="number">0</span>) &#123;</span><br><span class="line">        res.<span class="built_in">emplace_back</span>(phi, pk);</span><br><span class="line">        pk *= p;</span><br><span class="line">        phi *= p;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>举例来说，对于 <span
-class="math inline"><em>p</em> = 3</span>，你会得到：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vector&lt;pair&lt;ull, ull&gt;&gt; <span class="built_in">build_block</span>(ull p) {</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; res = {{<span class="number">1</span>, <span class="number">1</span>}};</span><br><span class="line">    ull pk = p, phi = p - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (phi &lt;= M &amp;&amp; M % phi == <span class="number">0</span>) {</span><br><span class="line">        res.<span class="built_in">emplace_back</span>(phi, pk);</span><br><span class="line">        pk *= p;</span><br><span class="line">        phi *= p;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>举例来说，对于 <span class="math inline"><em>p</em> = 3</span>，你会得到：</p>
 <ul>
-<li><span
-class="math inline">(<em>ϕ</em>(3<sup>1</sup>), 3<sup>1</sup>) = (2, 3)</span></li>
-<li><span
-class="math inline">(<em>ϕ</em>(3<sup>2</sup>), 3<sup>2</sup>) = (6, 9)</span></li>
-<li><span
-class="math inline">(<em>ϕ</em>(3<sup>3</sup>), 3<sup>3</sup>) = (18, 27)</span></li>
-<li>等等，只要 <span
-class="math inline"><em>ϕ</em>(<em>p</em><sup><em>k</em></sup>) ∣ <em>M</em></span></li>
+<li><span class="math inline">(<em>ϕ</em>(3<sup>1</sup>), 3<sup>1</sup>) = (2, 3)</span></li>
+<li><span class="math inline">(<em>ϕ</em>(3<sup>2</sup>), 3<sup>2</sup>) = (6, 9)</span></li>
+<li><span class="math inline">(<em>ϕ</em>(3<sup>3</sup>), 3<sup>3</sup>) = (18, 27)</span></li>
+<li>等等，只要 <span class="math inline"><em>ϕ</em>(<em>p</em><sup><em>k</em></sup>) ∣ <em>M</em></span></li>
 </ul>
-<hr />
+<hr>
 <h3 id="第-3-步合并所有-blocks构造所有-phin-n-对">第 3 步：合并所有
-blocks，构造所有 <span
-class="math inline">(<em>ϕ</em>(<em>n</em>), <em>n</em>)</span> 对</h3>
+blocks，构造所有 <span class="math inline">(<em>ϕ</em>(<em>n</em>), <em>n</em>)</span> 对</h3>
 <p>这一步是算法的关键。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (ull p : primes) &#123;</span><br><span class="line">    <span class="keyword">auto</span> block = <span class="built_in">build_block</span>(p);</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; next;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [phi1, n1] : current) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [phi2, n2] : block) &#123;</span><br><span class="line">            ull phi_new = phi1 * phi2;</span><br><span class="line">            <span class="keyword">if</span> (M % phi_new != <span class="number">0</span>) <span class="keyword">continue</span>; <span class="comment">// φ(n) 必须整除 13!</span></span><br><span class="line">            ull n_new = n1 * n2;</span><br><span class="line">            next.<span class="built_in">emplace_back</span>(phi_new, n_new);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">swap</span>(current, next);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们一开始只有 <span
-class="math inline">(1, 1)</span>，然后不断将它与每个素数的所有幂次组合合并。并且：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (ull p : primes) {</span><br><span class="line">    <span class="keyword">auto</span> block = <span class="built_in">build_block</span>(p);</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; next;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [phi1, n1] : current) {</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [phi2, n2] : block) {</span><br><span class="line">            ull phi_new = phi1 * phi2;</span><br><span class="line">            <span class="keyword">if</span> (M % phi_new != <span class="number">0</span>) <span class="keyword">continue</span>; <span class="comment">// φ(n) 必须整除 13!</span></span><br><span class="line">            ull n_new = n1 * n2;</span><br><span class="line">            next.<span class="built_in">emplace_back</span>(phi_new, n_new);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    <span class="built_in">swap</span>(current, next);</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>我们一开始只有 <span class="math inline">(1, 1)</span>，然后不断将它与每个素数的所有幂次组合合并。并且：</p>
 <p>✅ <strong>只保留能整除 <span class="math inline"><em>M</em></span>
-的 <span
-class="math inline"><em>ϕ</em></span></strong>，否则不可能组合出 <span
-class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em></span>。</p>
-<p>这样最终 <code>current</code> 中包含了所有可能组合出来的合法 <span
-class="math inline">(<em>ϕ</em>(<em>n</em>), <em>n</em>)</span>。</p>
-<hr />
-<h3 id="第-4-步筛选出-phinm排序取第-k-个">第 4 步：筛选出 <span
-class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em></span>，排序取第
+的 <span class="math inline"><em>ϕ</em></span></strong>，否则不可能组合出 <span class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em></span>。</p>
+<p>这样最终 <code>current</code> 中包含了所有可能组合出来的合法 <span class="math inline">(<em>ϕ</em>(<em>n</em>), <em>n</em>)</span>。</p>
+<hr>
+<h3 id="第-4-步筛选出-phinm排序取第-k-个">第 4 步：筛选出 <span class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em></span>，排序取第
 K 个</h3>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [phi, n] : current) &#123;</span><br><span class="line">    <span class="keyword">if</span> (phi == M) &#123;</span><br><span class="line">        results.<span class="built_in">push_back</span>(n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">sort</span>(results.<span class="built_in">begin</span>(), results.<span class="built_in">end</span>());</span><br></pre></td></tr></table></figure>
-<p>最后我们从中筛选出所有 <span
-class="math inline"><em>ϕ</em>(<em>n</em>) = 13!</span> 的 <span
-class="math inline"><em>n</em></span>，并排序，取出第 K 个：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (results.<span class="built_in">size</span>() &gt;= K) &#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;第 &quot;</span> &lt;&lt; K &lt;&lt; <span class="string">&quot; 个 n 是: &quot;</span> &lt;&lt; results[K - <span class="number">1</span>] &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<hr />
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">auto</span>&amp; [phi, n] : current) {</span><br><span class="line">    <span class="keyword">if</span> (phi == M) {</span><br><span class="line">        results.<span class="built_in">push_back</span>(n);</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"><span class="built_in">sort</span>(results.<span class="built_in">begin</span>(), results.<span class="built_in">end</span>());</span><br></pre></td></tr></table></figure>
+<p>最后我们从中筛选出所有 <span class="math inline"><em>ϕ</em>(<em>n</em>) = 13!</span> 的 <span class="math inline"><em>n</em></span>，并排序，取出第 K 个：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (results.<span class="built_in">size</span>() &gt;= K) {</span><br><span class="line">    cout &lt;&lt; <span class="string">"第 "</span> &lt;&lt; K &lt;&lt; <span class="string">" 个 n 是: "</span> &lt;&lt; results[K - <span class="number">1</span>] &lt;&lt; <span class="string">"\n"</span>;</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<hr>
 <h2 id="总结关键点">总结关键点</h2>
 <table>
 <colgroup>
-<col style="width: 57%" />
-<col style="width: 42%" />
+<col style="width: 57%">
+<col style="width: 42%">
 </colgroup>
 <thead>
 <tr>
@@ -340,33 +430,27 @@ class="math inline"><em>n</em></span>，并排序，取出第 K 个：</p>
 <tbody>
 <tr>
 <td>构造约数 <span class="math inline"><em>d</em></span>
-得到可能的大素数 <span
-class="math inline"><em>p</em> = <em>d</em> + 1</span></td>
-<td>确保不会漏掉构造 <span
-class="math inline"><em>ϕ</em>(<em>n</em>)</span> 的质因子</td>
+得到可能的大素数 <span class="math inline"><em>p</em> = <em>d</em> + 1</span></td>
+<td>确保不会漏掉构造 <span class="math inline"><em>ϕ</em>(<em>n</em>)</span> 的质因子</td>
 </tr>
 <tr>
-<td>为每个素数构造块 <span
-class="math inline">(<em>ϕ</em>(<em>p</em><sup><em>k</em></sup>), <em>p</em><sup><em>k</em></sup>)</span></td>
+<td>为每个素数构造块 <span class="math inline">(<em>ϕ</em>(<em>p</em><sup><em>k</em></sup>), <em>p</em><sup><em>k</em></sup>)</span></td>
 <td>利用欧拉函数积性结构</td>
 </tr>
 <tr>
-<td>合并块，仅保留 <span
-class="math inline"><em>ϕ</em> ∣ <em>M</em></span></td>
+<td>合并块，仅保留 <span class="math inline"><em>ϕ</em> ∣ <em>M</em></span></td>
 <td>避免爆炸增长并保证合法性</td>
 </tr>
 <tr>
-<td>最终筛选 <span
-class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em></span>，排序取第
-<span class="math inline"><em>K</em></span> 个 <span
-class="math inline"><em>n</em></span></td>
+<td>最终筛选 <span class="math inline"><em>ϕ</em>(<em>n</em>) = <em>M</em></span>，排序取第
+<span class="math inline"><em>K</em></span> 个 <span class="math inline"><em>n</em></span></td>
 <td>得到目标解</td>
 </tr>
 </tbody>
 </table>
-<hr />
+<hr>
 <h2 id="完整代码">完整代码</h2>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;bits/stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">#ifdef LOCAL</span><br><span class="line">#include &quot;C:\zwl\files\docs\debug.h&quot;</span><br><span class="line">#else</span><br><span class="line">#define debug(...) 42</span><br><span class="line">#endif</span><br><span class="line">using ull = unsigned long long;</span><br><span class="line">const ull M = 6227020800ULL;  // 13!</span><br><span class="line">const int K = 150000;</span><br><span class="line"></span><br><span class="line">// 快速乘和快速幂</span><br><span class="line">ull modmul(ull a, ull b, ull mod) &#123;</span><br><span class="line">    __uint128_t t = (__uint128_t)a * b;</span><br><span class="line">    return t % mod;</span><br><span class="line">&#125;</span><br><span class="line">ull modpow(ull a, ull e, ull mod) &#123;</span><br><span class="line">    ull res = 1;</span><br><span class="line">    while (e) &#123;</span><br><span class="line">        if (e &amp; 1)</span><br><span class="line">            res = modmul(res, a, mod);</span><br><span class="line">        a = modmul(a, a, mod);</span><br><span class="line">        e &gt;&gt;= 1;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Miller-Rabin 判断素数</span><br><span class="line">bool isPrime(ull n) &#123;</span><br><span class="line">    if (n &lt; 2)</span><br><span class="line">        return false;</span><br><span class="line">    for (ull p : &#123;2, 3, 5, 7, 11, 13, 17, 19, 23&#125;) &#123;</span><br><span class="line">        if (n % p == 0)</span><br><span class="line">            return n == p;</span><br><span class="line">    &#125;</span><br><span class="line">    ull d = n - 1, s = 0;</span><br><span class="line">    while ((d &amp; 1) == 0)</span><br><span class="line">        d &gt;&gt;= 1, ++s;</span><br><span class="line">    for (ull a : &#123;2, 3, 5, 7, 11&#125;) &#123;</span><br><span class="line">        if (a &gt;= n)</span><br><span class="line">            break;</span><br><span class="line">        ull x = modpow(a, d, n);</span><br><span class="line">        if (x == 1 || x == n - 1)</span><br><span class="line">            continue;</span><br><span class="line">        bool composite = true;</span><br><span class="line">        for (int r = 1; r &lt; s; ++r) &#123;</span><br><span class="line">            x = modmul(x, x, n);</span><br><span class="line">            if (x == n - 1) &#123;</span><br><span class="line">                composite = false;</span><br><span class="line">                break;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        if (composite)</span><br><span class="line">            return false;</span><br><span class="line">    &#125;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 13! 的素因子分解</span><br><span class="line">vector&lt;pair&lt;ull, int&gt;&gt; factor = &#123;</span><br><span class="line">    &#123;2, 10&#125;,</span><br><span class="line">    &#123;3, 5&#125;,</span><br><span class="line">    &#123;5, 2&#125;,</span><br><span class="line">    &#123;7, 1&#125;,</span><br><span class="line">    &#123;11, 1&#125;,</span><br><span class="line">    &#123;13, 1&#125;&#125;;</span><br><span class="line"></span><br><span class="line">// 所有约数</span><br><span class="line">void generate_divisors(int idx, ull cur, vector&lt;ull&gt;&amp; divisors) &#123;</span><br><span class="line">    if (idx == factor.size()) &#123;</span><br><span class="line">        divisors.push_back(cur);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    for (int i = 0; i &lt;= factor[idx].second; ++i) &#123;</span><br><span class="line">        generate_divisors(idx + 1, cur, divisors);</span><br><span class="line">        cur *= factor[idx].first;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 为素数构造块 [(phi(p^k), p^k)]</span><br><span class="line">vector&lt;pair&lt;ull, ull&gt;&gt; build_block(ull p) &#123;</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; res = &#123;&#123;1, 1&#125;&#125;;</span><br><span class="line">    ull pk = p, phi = p - 1;</span><br><span class="line">    while (phi &lt;= M &amp;&amp; M % phi == 0) &#123;</span><br><span class="line">        res.emplace_back(phi, pk);</span><br><span class="line">        if (pk &gt; M / p)</span><br><span class="line">            break;</span><br><span class="line">        pk *= p;</span><br><span class="line">        phi *= p;</span><br><span class="line">    &#125;</span><br><span class="line">    return res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main() &#123;</span><br><span class="line">    auto start_time = std::chrono::high_resolution_clock::now();</span><br><span class="line">    ios::sync_with_stdio(false);</span><br><span class="line">    cin.tie(nullptr);</span><br><span class="line"></span><br><span class="line">    // 1. 枚举素数集合</span><br><span class="line">    vector&lt;ull&gt; primes = &#123;2, 3, 5, 7, 11, 13&#125;;</span><br><span class="line">    vector&lt;ull&gt; divisors;</span><br><span class="line">    generate_divisors(0, 1, divisors);</span><br><span class="line">    for (ull d : divisors) &#123;</span><br><span class="line">        ull p = d + 1;</span><br><span class="line">        if (p &gt; 13 &amp;&amp; isPrime(p)) &#123;</span><br><span class="line">            primes.push_back(p);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    sort(primes.begin(), primes.end());</span><br><span class="line"></span><br><span class="line">    // 2. 初始化状态</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; current = &#123;&#123;1, 1&#125;&#125;;</span><br><span class="line"></span><br><span class="line">    // 3. 合并所有 prime blocks，只保留 phi 整除 M 的项</span><br><span class="line">    for (ull p : primes) &#123;</span><br><span class="line">        auto block = build_block(p);</span><br><span class="line">        vector&lt;pair&lt;ull, ull&gt;&gt; next;</span><br><span class="line"></span><br><span class="line">        for (auto&amp; [phi1, n1] : current) &#123;</span><br><span class="line">            for (auto&amp; [phi2, n2] : block) &#123;</span><br><span class="line">                ull phi_new = phi1 * phi2;</span><br><span class="line">                if (M % phi_new != 0)</span><br><span class="line">                    continue;</span><br><span class="line">                ull n_new = n1 * n2;</span><br><span class="line">                next.emplace_back(phi_new, n_new);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        swap(current, next);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 4. 筛选 φ(n)=M</span><br><span class="line">    vector&lt;ull&gt; results;</span><br><span class="line">    for (auto&amp; [phi, n] : current) &#123;</span><br><span class="line">        if (phi == M) &#123;</span><br><span class="line">            results.push_back(n);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    sort(results.begin(), results.end());</span><br><span class="line">    if (results.size() &gt;= K) &#123;</span><br><span class="line">        cout &lt;&lt; &quot;第 &quot; &lt;&lt; K &lt;&lt; &quot; 个 n 是: &quot; &lt;&lt; results[K - 1] &lt;&lt; &quot;\n&quot;;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        cout &lt;&lt; &quot;找不到足够的解，只有 &quot; &lt;&lt; results.size() &lt;&lt; &quot; 个\n&quot;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    auto end_time = std::chrono::high_resolution_clock::now();</span><br><span class="line">    auto duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end_time - start_time).count();</span><br><span class="line">    std::cout &lt;&lt; &quot;代码执行时间: &quot; &lt;&lt; duration &lt;&lt; &quot; 毫秒&quot; &lt;&lt; std::endl;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;bits/stdc++.h&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">#ifdef LOCAL</span><br><span class="line">#include "C:\zwl\files\docs\debug.h"</span><br><span class="line">#else</span><br><span class="line">#define debug(...) 42</span><br><span class="line">#endif</span><br><span class="line">using ull = unsigned long long;</span><br><span class="line">const ull M = 6227020800ULL;  // 13!</span><br><span class="line">const int K = 150000;</span><br><span class="line"></span><br><span class="line">// 快速乘和快速幂</span><br><span class="line">ull modmul(ull a, ull b, ull mod) {</span><br><span class="line">    __uint128_t t = (__uint128_t)a * b;</span><br><span class="line">    return t % mod;</span><br><span class="line">}</span><br><span class="line">ull modpow(ull a, ull e, ull mod) {</span><br><span class="line">    ull res = 1;</span><br><span class="line">    while (e) {</span><br><span class="line">        if (e &amp; 1)</span><br><span class="line">            res = modmul(res, a, mod);</span><br><span class="line">        a = modmul(a, a, mod);</span><br><span class="line">        e &gt;&gt;= 1;</span><br><span class="line">    }</span><br><span class="line">    return res;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// Miller-Rabin 判断素数</span><br><span class="line">bool isPrime(ull n) {</span><br><span class="line">    if (n &lt; 2)</span><br><span class="line">        return false;</span><br><span class="line">    for (ull p : {2, 3, 5, 7, 11, 13, 17, 19, 23}) {</span><br><span class="line">        if (n % p == 0)</span><br><span class="line">            return n == p;</span><br><span class="line">    }</span><br><span class="line">    ull d = n - 1, s = 0;</span><br><span class="line">    while ((d &amp; 1) == 0)</span><br><span class="line">        d &gt;&gt;= 1, ++s;</span><br><span class="line">    for (ull a : {2, 3, 5, 7, 11}) {</span><br><span class="line">        if (a &gt;= n)</span><br><span class="line">            break;</span><br><span class="line">        ull x = modpow(a, d, n);</span><br><span class="line">        if (x == 1 || x == n - 1)</span><br><span class="line">            continue;</span><br><span class="line">        bool composite = true;</span><br><span class="line">        for (int r = 1; r &lt; s; ++r) {</span><br><span class="line">            x = modmul(x, x, n);</span><br><span class="line">            if (x == n - 1) {</span><br><span class="line">                composite = false;</span><br><span class="line">                break;</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        if (composite)</span><br><span class="line">            return false;</span><br><span class="line">    }</span><br><span class="line">    return true;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 13! 的素因子分解</span><br><span class="line">vector&lt;pair&lt;ull, int&gt;&gt; factor = {</span><br><span class="line">    {2, 10},</span><br><span class="line">    {3, 5},</span><br><span class="line">    {5, 2},</span><br><span class="line">    {7, 1},</span><br><span class="line">    {11, 1},</span><br><span class="line">    {13, 1}};</span><br><span class="line"></span><br><span class="line">// 所有约数</span><br><span class="line">void generate_divisors(int idx, ull cur, vector&lt;ull&gt;&amp; divisors) {</span><br><span class="line">    if (idx == factor.size()) {</span><br><span class="line">        divisors.push_back(cur);</span><br><span class="line">        return;</span><br><span class="line">    }</span><br><span class="line">    for (int i = 0; i &lt;= factor[idx].second; ++i) {</span><br><span class="line">        generate_divisors(idx + 1, cur, divisors);</span><br><span class="line">        cur *= factor[idx].first;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 为素数构造块 [(phi(p^k), p^k)]</span><br><span class="line">vector&lt;pair&lt;ull, ull&gt;&gt; build_block(ull p) {</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; res = {{1, 1}};</span><br><span class="line">    ull pk = p, phi = p - 1;</span><br><span class="line">    while (phi &lt;= M &amp;&amp; M % phi == 0) {</span><br><span class="line">        res.emplace_back(phi, pk);</span><br><span class="line">        if (pk &gt; M / p)</span><br><span class="line">            break;</span><br><span class="line">        pk *= p;</span><br><span class="line">        phi *= p;</span><br><span class="line">    }</span><br><span class="line">    return res;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">int main() {</span><br><span class="line">    auto start_time = std::chrono::high_resolution_clock::now();</span><br><span class="line">    ios::sync_with_stdio(false);</span><br><span class="line">    cin.tie(nullptr);</span><br><span class="line"></span><br><span class="line">    // 1. 枚举素数集合</span><br><span class="line">    vector&lt;ull&gt; primes = {2, 3, 5, 7, 11, 13};</span><br><span class="line">    vector&lt;ull&gt; divisors;</span><br><span class="line">    generate_divisors(0, 1, divisors);</span><br><span class="line">    for (ull d : divisors) {</span><br><span class="line">        ull p = d + 1;</span><br><span class="line">        if (p &gt; 13 &amp;&amp; isPrime(p)) {</span><br><span class="line">            primes.push_back(p);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    sort(primes.begin(), primes.end());</span><br><span class="line"></span><br><span class="line">    // 2. 初始化状态</span><br><span class="line">    vector&lt;pair&lt;ull, ull&gt;&gt; current = {{1, 1}};</span><br><span class="line"></span><br><span class="line">    // 3. 合并所有 prime blocks，只保留 phi 整除 M 的项</span><br><span class="line">    for (ull p : primes) {</span><br><span class="line">        auto block = build_block(p);</span><br><span class="line">        vector&lt;pair&lt;ull, ull&gt;&gt; next;</span><br><span class="line"></span><br><span class="line">        for (auto&amp; [phi1, n1] : current) {</span><br><span class="line">            for (auto&amp; [phi2, n2] : block) {</span><br><span class="line">                ull phi_new = phi1 * phi2;</span><br><span class="line">                if (M % phi_new != 0)</span><br><span class="line">                    continue;</span><br><span class="line">                ull n_new = n1 * n2;</span><br><span class="line">                next.emplace_back(phi_new, n_new);</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        swap(current, next);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    // 4. 筛选 φ(n)=M</span><br><span class="line">    vector&lt;ull&gt; results;</span><br><span class="line">    for (auto&amp; [phi, n] : current) {</span><br><span class="line">        if (phi == M) {</span><br><span class="line">            results.push_back(n);</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    sort(results.begin(), results.end());</span><br><span class="line">    if (results.size() &gt;= K) {</span><br><span class="line">        cout &lt;&lt; "第 " &lt;&lt; K &lt;&lt; " 个 n 是: " &lt;&lt; results[K - 1] &lt;&lt; "\n";</span><br><span class="line">    } else {</span><br><span class="line">        cout &lt;&lt; "找不到足够的解，只有 " &lt;&lt; results.size() &lt;&lt; " 个\n";</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    auto end_time = std::chrono::high_resolution_clock::now();</span><br><span class="line">    auto duration = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end_time - start_time).count();</span><br><span class="line">    std::cout &lt;&lt; "代码执行时间: " &lt;&lt; duration &lt;&lt; " 毫秒" &lt;&lt; std::endl;</span><br><span class="line">    return 0;</span><br><span class="line">}</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
     </div>
 
