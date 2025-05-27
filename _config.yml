@@ -104,3 +104,13 @@ deploy:
   type: git
   repo: https://github.com/dezhonger/dezhonger.github.io.git
   branch: master
+
+pandoc:
+  args:
+    - '-f'
+    - 'commonmark_x'
+    - '-t'
+    - 'html'
+    - '--mathjax'
+  extensions:
+    - '-implicit_figures'
