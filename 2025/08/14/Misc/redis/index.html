@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.3.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="前言 《Redis 设计与实现》是我很早之前阅读过的一本书, 也是我深入学习的第一个开源的 C 语言项目. 在当时学习的时候, 我从源码的 unit test 逐步调试学习, 学到了不少东西. 但是随着时间的推移, 里面的很多东西都已经忘得差不多了, 如今再次学习这本书, 希望把一些要点记录下来. 主要目的是为了巩固自己的基础知识, 为了工作和面试的需要.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Redis 设计与实现》阅读笔记">
+<meta property="og:url" content="http://example.com/2025/08/14/Misc/redis/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="前言 《Redis 设计与实现》是我很早之前阅读过的一本书, 也是我深入学习的第一个开源的 C 语言项目. 在当时学习的时候, 我从源码的 unit test 逐步调试学习, 学到了不少东西. 但是随着时间的推移, 里面的很多东西都已经忘得差不多了, 如今再次学习这本书, 希望把一些要点记录下来. 主要目的是为了巩固自己的基础知识, 为了工作和面试的需要.">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-08-13T17:21:10.184Z">
+<meta property="article:modified_time" content="2025-08-13T18:32:00.419Z">
+<meta property="article:author" content="Weilong Zhang">
+<meta property="article:tag" content="Redis">
+<meta property="article:tag" content="中间件">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2025/08/14/Misc/redis/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"http://example.com/2025/08/14/Misc/redis/","path":"2025/08/14/Misc/redis/","title":"《Redis 设计与实现》阅读笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>《Redis 设计与实现》阅读笔记 | Hexo</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<style>mjx-container[jax="SVG"] {
+  direction: ltr;
+}
+
+mjx-container[jax="SVG"] > svg {
+  overflow: visible;
+}
+
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+
+mjx-container[jax="SVG"][justify="left"] {
+  text-align: left;
+}
+
+mjx-container[jax="SVG"][justify="right"] {
+  text-align: right;
+}
+
+g[data-mml-node="merror"] > g {
+  fill: red;
+  stroke: red;
+}
+
+g[data-mml-node="merror"] > rect[data-background] {
+  fill: yellow;
+  stroke: none;
+}
+
+g[data-mml-node="mtable"] > line[data-line] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > rect[data-frame] {
+  stroke-width: 70px;
+  fill: none;
+}
+
+g[data-mml-node="mtable"] > .mjx-dashed {
+  stroke-dasharray: 140;
+}
+
+g[data-mml-node="mtable"] > .mjx-dotted {
+  stroke-linecap: round;
+  stroke-dasharray: 0,140;
+}
+
+g[data-mml-node="mtable"] > svg {
+  overflow: visible;
+}
+
+[jax="SVG"] mjx-tool {
+  display: inline-block;
+  position: relative;
+  width: 0;
+  height: 0;
+}
+
+[jax="SVG"] mjx-tool > mjx-tip {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+mjx-tool > mjx-tip {
+  display: inline-block;
+  padding: .2em;
+  border: 1px solid #888;
+  font-size: 70%;
+  background-color: #F8F8F8;
+  color: black;
+  box-shadow: 2px 2px 5px #AAAAAA;
+}
+
+g[data-mml-node="maction"][data-toggle] {
+  cursor: pointer;
+}
+
+mjx-status {
+  display: block;
+  position: fixed;
+  left: 1em;
+  bottom: 1em;
+  min-width: 25%;
+  padding: .2em .4em;
+  border: 1px solid #888;
+  font-size: 90%;
+  background-color: #F8F8F8;
+  color: black;
+}
+
+foreignObject[data-mjx-xml] {
+  font-family: initial;
+  line-height: normal;
+  overflow: visible;
+}
+
+.MathJax path {
+  stroke-width: 3;
+}
+
+mjx-container[display="true"] {
+  overflow: auto hidden;
+}
+
+mjx-container[display="true"] + br {
+  display: none;
+}
+</style></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Hexo</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-0-%E5%89%8D%E8%A8%80"><span class="nav-text">Section 0 前言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-1-%E5%BC%95%E8%A8%80"><span class="nav-text">chapter 1 引言</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-1-%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E5%AF%B9%E8%B1%A1"><span class="nav-text">Section 1 数据结构与对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-2-%E7%AE%80%E5%8D%95%E5%8A%A8%E6%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-text">chapter 2 简单动态字符串</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-3-%E9%93%BE%E8%A1%A8"><span class="nav-text">chapter 3 链表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-4-%E5%AD%97%E5%85%B8"><span class="nav-text">chapter 4 字典</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-5-%E8%B7%B3%E8%B7%83%E8%A1%A8"><span class="nav-text">chapter 5 跳跃表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-6-%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88"><span class="nav-text">chapter 6 整数集合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-7-%E5%8E%8B%E7%BC%A9%E5%88%97%E8%A1%A8"><span class="nav-text">chapter 7 压缩列表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-8-%E5%AF%B9%E8%B1%A1"><span class="nav-text">chapter 8 对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%AF%B9%E8%B1%A1string"><span class="nav-text">字符串对象(string)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%97%E8%A1%A8%E5%AF%B9%E8%B1%A1list"><span class="nav-text">列表对象(list)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E5%AF%B9%E8%B1%A1hash"><span class="nav-text">哈希对象(hash)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9B%86%E5%90%88%E5%AF%B9%E8%B1%A1set"><span class="nav-text">集合对象(set)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%BA%8F%E9%9B%86%E5%90%88%E5%AF%B9%E8%B1%A1sorted-set"><span class="nav-text">有序集合对象(sorted set)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BEbitmap"><span class="nav-text">位图(bitmap)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B6%85%E6%97%A5%E5%BF%97hyperloglog"><span class="nav-text">超日志(hyperloglog)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%B0%E7%90%86%E4%BD%8D%E7%BD%AEgeospatial"><span class="nav-text">地理位置(geospatial)</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-2-%E5%8D%95%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">Section 2 单机数据库的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E9%9D%A2%E7%9A%84%E5%86%85%E5%AE%B9%E8%BF%98%E6%B2%A1%E5%86%99"><span class="nav-text">下面的内容还没写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-9-%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-text">chapter 9 数据库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-10-rdb%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">chapter 10 RDB持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-11-aof%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">chapter 11 AOF持久化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-12-%E4%BA%8B%E4%BB%B6"><span class="nav-text">chapter 12 事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-13-%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-text">chapter 13 客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-14-%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-text">chapter 14 服务器</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-3-%E5%A4%9A%E6%9C%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">Section 3 多机数据库的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-15-%E5%A4%8D%E5%88%B6"><span class="nav-text">chapter 15 复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-16-sentinel"><span class="nav-text">chapter 16 sentinel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-17-%E9%9B%86%E7%BE%A4"><span class="nav-text">chapter 17 集群</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#section-4-%E7%8B%AC%E7%AB%8B%E5%8A%9F%E8%83%BD%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-text">Section 4 独立功能的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-18-%E5%8F%91%E5%B8%83%E4%B8%8E%E8%AE%A2%E9%98%85"><span class="nav-text">chapter 18 发布与订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-19-%E4%BA%8B%E5%8A%A1"><span class="nav-text">chapter 19 事务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-20-lua%E8%84%9A%E6%9C%AC"><span class="nav-text">chapter 20 Lua脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-21-%E6%8E%92%E5%BA%8F"><span class="nav-text">chapter 21 排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-22-%E4%BA%8C%E8%BF%9B%E5%88%B6%E4%BD%8D%E6%95%B0%E7%BB%84"><span class="nav-text">chapter 22 二进制位数组</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-23-%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97"><span class="nav-text">chapter 23 慢查询日志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#chapter-24-%E7%9B%91%E8%A7%86%E5%99%A8"><span class="nav-text">chapter 24 监视器</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Weilong Zhang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2025/08/14/Misc/redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Weilong Zhang">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="《Redis 设计与实现》阅读笔记 | Hexo">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《Redis 设计与实现》阅读笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2025-08-14 01:21:10 / Modified: 02:32:00" itemprop="dateCreated datePublished" datetime="2025-08-14T01:21:10+08:00">2025-08-14</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="前言">前言</h2>
+<p>《Redis 设计与实现》是我很早之前阅读过的一本书,
+也是我深入学习的第一个开源的 C 语言项目. 在当时学习的时候, 我从源码的
+unit test 逐步调试学习, 学到了不少东西. 但是随着时间的推移,
+里面的很多东西都已经忘得差不多了, 如今再次学习这本书,
+希望把一些要点记录下来. 主要目的是为了巩固自己的基础知识,
+为了工作和面试的需要.</p>
+<span id="more"></span>
+
+<h2 id="section-0-前言">Section 0 前言</h2>
+<h3 id="chapter-1-引言">chapter 1 引言</h3>
+<p>这里应该有如下内容(<strong>先鸽,后续有空再补充</strong>):</p>
+<ul>
+<li>我们依赖 redis 的版本, 因为随着 redis 的更新,
+有可能本文的内容会过时.</li>
+<li>如何获取源码以及如何在本地或远程调试</li>
+</ul>
+<h2 id="section-1-数据结构与对象">Section 1 数据结构与对象</h2>
+<h3 id="chapter-2-简单动态字符串">chapter 2 简单动态字符串</h3>
+<blockquote>
+<p>简单动态字符串: <strong>SDS(simple dynamic string)</strong></p>
+</blockquote>
+<p>重点:</p>
+<ul>
+<li>在大多数情况下, redis 使用 SDS 作为字符串表示</li>
+<li>比起 C 字符串, SDS 具有以下优点
+<ul>
+<li>常数复杂度获取字符串长度</li>
+<li>避免缓冲区溢出</li>
+<li>减少修改字符串时带来的内存重分配次数</li>
+<li>二进制安全</li>
+<li>兼容部分 C 字符串函数</li>
+</ul></li>
+</ul>
+<p>SDS定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sdshdr</span> {</span></span><br><span class="line">    <span class="type">int</span> len; <span class="comment">// 字符串长度</span></span><br><span class="line">    <span class="type">int</span> <span class="built_in">free</span>; <span class="comment">// 字符串未使用的空间</span></span><br><span class="line">    <span class="type">char</span> buf[]; <span class="comment">// 字符串内容</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+
+<h3 id="chapter-3-链表">chapter 3 链表</h3>
+<p>重点:</p>
+<ul>
+<li>链表被广泛用于 redis 的各种功能, 如列表键, 发布/订阅, 慢查询,
+监视器等.</li>
+<li>链表的每个节点都使用一个<code>/listNode</code>结构来表示,
+每个节点都有一个指向前置节点和后置节点的指针, 所以 redis
+的链表是双端链表</li>
+<li>每个链表使用一个<code>list</code>结构来表示,
+这个结构包含了指向头节点, 尾节点和链表长度等信息</li>
+<li>redis 是无环链表,
+头结点的前置节点和尾结点的后置节点都指向<code>NULL</code></li>
+<li>链表可以保存各种不同类型的值,
+因为链表节点使用了<code>void*</code>指针, 所以可以指向任何类型的值</li>
+</ul>
+<p>链表节点定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> {</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">prev</span>;</span> <span class="comment">// 前置节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">listNode</span> *<span class="title">next</span>;</span> <span class="comment">// 后置节点</span></span><br><span class="line">    <span class="type">void</span> *value; <span class="comment">// 节点的值</span></span><br><span class="line">} listNode;</span><br></pre></td></tr></table></figure>
+
+<p>虽然使用多个 listNode 就可以组成链表,
+但是使用<code>list</code>来持有链表,操作会更方便</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">type <span class="class"><span class="keyword">struct</span> <span class="title">list</span> {</span></span><br><span class="line">    listNode *head; <span class="comment">// 指向头节点</span></span><br><span class="line">    listNode *tail; <span class="comment">// 指向尾节点</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> len; <span class="comment">// 链表长度</span></span><br><span class="line">    <span class="comment">// 其他函数</span></span><br><span class="line">} <span class="built_in">list</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="chapter-4-字典">chapter 4 字典</h3>
+<p>重点:</p>
+<ul>
+<li>字典被广泛用于redis的各种功能, 其中包括数据库和哈希键</li>
+<li>redis中的字典使用哈希表作为底层实现, 每个字典带有两个哈希表,
+一个平时使用, 另一个仅在进行rehash时使用</li>
+<li>当字典被用作数据库的底层实现, 或者哈希键的底层实现时,
+redis使用Murmurhash2算法来计算键的哈希值</li>
+<li>哈希表使用链地址法来解决哈希冲突,
+被分配到同一个索引上的多个键值对会连接成一个单向链表</li>
+<li>在对哈希表进行扩展或收缩操作时,
+程序需要将现有哈希表中的所有键值对重新计算哈希值和索引,
+并将它们放到新哈希表里面,
+并且这个rehash过程并不是一次完成的吗而是渐进式完成的</li>
+</ul>
+<p><strong>哈希表</strong>定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">type <span class="class"><span class="keyword">struct</span> <span class="title">dictht</span> {</span></span><br><span class="line">    dictEntry **table; <span class="comment">// 哈希表数组</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> size; <span class="comment">// 哈希表大小</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> sizemask; <span class="comment">// 哈希表掩码, 用于计算索引值, 总是等于size-1</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> used; <span class="comment">// 哈希表已有的节点的数量</span></span><br><span class="line">} dictht;</span><br></pre></td></tr></table></figure>
+
+<p><strong>哈希表节点</strong>定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> {</span></span><br><span class="line">    <span class="type">void</span> *key; <span class="comment">// 键</span></span><br><span class="line">    <span class="class"><span class="keyword">union</span> {</span></span><br><span class="line">        <span class="type">void</span> *val; <span class="comment">// 值</span></span><br><span class="line">        <span class="type">uint64_t</span> u64; <span class="comment">// 整数值</span></span><br><span class="line">        <span class="type">int64_t</span> s64; <span class="comment">// 有符号整数值</span></span><br><span class="line">    } v; <span class="comment">// 值的联合体, 可以保存多种类型的值</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">dictEntry</span> *<span class="title">next</span>;</span> <span class="comment">// 指向下一个节点, 用于解决哈希冲突</span></span><br><span class="line">} dictEntry;</span><br></pre></td></tr></table></figure>
+
+<p><strong>字典</strong>定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">type <span class="class"><span class="keyword">struct</span> <span class="title">dict</span> {</span></span><br><span class="line">    dictht ht[<span class="number">2</span>]; <span class="comment">// 两个哈希表, 一个用于平时使用, 另一个用于rehash</span></span><br><span class="line">    <span class="type">void</span> *privdata; <span class="comment">// 私有数据</span></span><br><span class="line">    dictType *type; <span class="comment">// 类型特定函数</span></span><br><span class="line">    <span class="type">int</span> trehashidx; <span class="comment">// rehash索引, 当rehash不在进行时, 该值为-1</span></span><br><span class="line">} dict;</span><br></pre></td></tr></table></figure>
+
+<h3 id="chapter-5-跳跃表">chapter 5 跳跃表</h3>
+<blockquote>
+<p>跳跃表(<code>skiplist</code>)是一种有序数据结构. 支持平均O(logN),
+最坏O(N)复杂度的节点查找</p>
+</blockquote>
+<p>重点:</p>
+<ul>
+<li>跳跃表是有序集合的底层实现之一</li>
+<li>redis跳跃表由<code>zskiplist</code>和<code>zskiplistNode</code>两个结构组成,
+其中<code>zskiplist</code>用于保存跳跃表信息(比如表头节点, 表尾节点,
+长度), 而<code>zskiplistNode</code>用于表示跳跃表及诶单</li>
+<li>每个跳跃表节点的层高都是1至32之间的随机数</li>
+<li>在同一个跳跃表中, 多个节点可以包含相同的分值,
+但每个节点的成员对象必须是唯一的</li>
+<li>跳跃表的节点按照分值大小排序, 当分值相同时,
+节点按照成员对象的大小进行排序</li>
+</ul>
+<p><strong>跳跃表节点</strong>定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> {</span></span><br><span class="line">    <span class="comment">// 成员对象（存储字符串）</span></span><br><span class="line">    sds ele;</span><br><span class="line">    <span class="comment">// 分值（排序的依据）</span></span><br><span class="line">    <span class="type">double</span> score;</span><br><span class="line">    <span class="comment">// 后退指针（用于从表尾向表头遍历）</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">backward</span>;</span></span><br><span class="line">    <span class="comment">// 层（每个层包含前进指针和跨度）</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistLevel</span> {</span></span><br><span class="line">        <span class="comment">// 前进指针（指向同一层的下一个节点）</span></span><br><span class="line">        <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">forward</span>;</span></span><br><span class="line">        <span class="comment">// 跨度（当前节点到下一个节点的距离，用于计算排名）</span></span><br><span class="line">        <span class="type">unsigned</span> <span class="type">long</span> span;</span><br><span class="line">    } level[];  <span class="comment">// 柔性数组，层数动态分配</span></span><br><span class="line">} zskiplistNode;</span><br></pre></td></tr></table></figure>
+
+<p><strong>跳跃表</strong>定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">zskiplist</span> {</span></span><br><span class="line">    <span class="comment">// 表头节点和表尾节点</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">zskiplistNode</span> *<span class="title">header</span>, *<span class="title">tail</span>;</span></span><br><span class="line">    <span class="comment">// 表中节点的数量</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> length;</span><br><span class="line">    <span class="comment">// 表中层数最大的节点的层数</span></span><br><span class="line">    <span class="type">int</span> level;</span><br><span class="line">} zskiplist;</span><br></pre></td></tr></table></figure>
+
+<h3 id="chapter-6-整数集合">chapter 6 整数集合</h3>
+<blockquote>
+<p>整数集合(<code>intset</code>)是集合键的底层实现之一,
+当一个集合只包含整数元素, 并且数量不多,
+redis就会使用整数集合作为集合间的底层实现</p>
+</blockquote>
+<p>重点:</p>
+<ul>
+<li>整数集合是集合键的底层实现之一</li>
+<li>整数集合的底层实现是数组, 这个数组以无序, 无重复的方式保存集合元素,
+在有需要时, 程序会根据新添加元素的类型, 改变这个数组的类型</li>
+<li>升级操作为整数集合带来了操作上的灵活性, 并且尽可能节约了内存</li>
+<li>整数集合只支持升级, 不支持降级操作</li>
+</ul>
+<p><code>intset</code>的结构定义如下:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">type <span class="class"><span class="keyword">struct</span> <span class="title">intset</span> {</span></span><br><span class="line">    <span class="type">uint32_t</span> encoding; <span class="comment">// 编码方式</span></span><br><span class="line">    <span class="type">uint32_t</span> length; <span class="comment">// 元素数量</span></span><br><span class="line">    <span class="type">int8_t</span> contents[]; <span class="comment">// 元素数组</span></span><br><span class="line">} intset;</span><br></pre></td></tr></table></figure>
+
+<h3 id="chapter-7-压缩列表">chapter 7 压缩列表</h3>
+<blockquote>
+<p>压缩列表(<code>ziplist</code>)是列表键和哈希键的底层实现之一.
+当一个列表键只含少量的列表项, 并且每个列表项要么是小整数值,
+要么就是长度比较短的字符串,
+那么redis就会使用压缩列表作为列表键的底层实现. 另外,
+当一个哈希键只包含少量键值对, 并且每个键值对的键和值要么是小整数值,
+要么就是长度比较短的字符串,
+redis就会使用压缩列表作为哈希键的底层实现.</p>
+</blockquote>
+<p>重点:</p>
+<ul>
+<li>压缩列表是一种为节约内存而开发的顺序性数据结构</li>
+<li>压缩列表被用于作为列表键和哈希键的底层实现之一</li>
+<li>压缩列表可以包含多个节点, 每个节点可以保存一个字节数组或整数值</li>
+<li>添加新节点到压缩列表, 或者删除一个节点, 可能会引发连锁更新操作(<span class="math inline"><mjx-container class="MathJax" jax="SVG"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="6.606ex" height="2.452ex" role="img" focusable="false" viewBox="0 -833.9 2919.8 1083.9"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="mi"><path data-c="1D442" d="M740 435Q740 320 676 213T511 42T304 -22Q207 -22 138 35T51 201Q50 209 50 244Q50 346 98 438T227 601Q351 704 476 704Q514 704 524 703Q621 689 680 617T740 435ZM637 476Q637 565 591 615T476 665Q396 665 322 605Q242 542 200 428T157 216Q157 126 200 73T314 19Q404 19 485 98T608 313Q637 408 637 476Z"></path></g><g data-mml-node="mo" transform="translate(763,0)"><path data-c="28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path></g><g data-mml-node="msup" transform="translate(1152,0)"><g data-mml-node="mi"><path data-c="1D441" d="M234 637Q231 637 226 637Q201 637 196 638T191 649Q191 676 202 682Q204 683 299 683Q376 683 387 683T401 677Q612 181 616 168L670 381Q723 592 723 606Q723 633 659 637Q635 637 635 648Q635 650 637 660Q641 676 643 679T653 683Q656 683 684 682T767 680Q817 680 843 681T873 682Q888 682 888 672Q888 650 880 642Q878 637 858 637Q787 633 769 597L620 7Q618 0 599 0Q585 0 582 2Q579 5 453 305L326 604L261 344Q196 88 196 79Q201 46 268 46H278Q284 41 284 38T282 19Q278 6 272 0H259Q228 2 151 2Q123 2 100 2T63 2T46 1Q31 1 31 10Q31 14 34 26T39 40Q41 46 62 46Q130 49 150 85Q154 91 221 362L289 634Q287 635 234 637Z"></path></g><g data-mml-node="mn" transform="translate(975.3,363) scale(0.707)"><path data-c="32" d="M109 429Q82 429 66 447T50 491Q50 562 103 614T235 666Q326 666 387 610T449 465Q449 422 429 383T381 315T301 241Q265 210 201 149L142 93L218 92Q375 92 385 97Q392 99 409 186V189H449V186Q448 183 436 95T421 3V0H50V19V31Q50 38 56 46T86 81Q115 113 136 137Q145 147 170 174T204 211T233 244T261 278T284 308T305 340T320 369T333 401T340 431T343 464Q343 527 309 573T212 619Q179 619 154 602T119 569T109 550Q109 549 114 549Q132 549 151 535T170 489Q170 464 154 447T109 429Z"></path></g></g><g data-mml-node="mo" transform="translate(2530.8,0)"><path data-c="29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path></g></g></g></svg></mjx-container></span>), 但这种出现的几率不高</li>
+</ul>
+<h3 id="chapter-8-对象">chapter 8 对象</h3>
+<blockquote>
+<p>redis并没有直接使用上述的数据结构,而是基于这些数据结构创建了一个对象系统,
+包含字符串对象, 列表对象, 哈希对象, 集合对象, 有序集合对象,
+每种对象都用到了至少一种上述的数据结构</p>
+</blockquote>
+<h4 id="字符串对象string">字符串对象(string)</h4>
+<p>int, raw, embstr</p>
+<h4 id="列表对象list">列表对象(list)</h4>
+<p>ziplist, linkedlist</p>
+<h4 id="哈希对象hash">哈希对象(hash)</h4>
+<p>ziplist, hashtable</p>
+<h4 id="集合对象set">集合对象(set)</h4>
+<p>intset, hashtable</p>
+<h4 id="有序集合对象sorted-set">有序集合对象(sorted set)</h4>
+<p>ziplist, skiplist, hashtable</p>
+<blockquote>
+<p>这里补充一下书上没有的</p>
+</blockquote>
+<h4 id="位图bitmap">位图(bitmap)</h4>
+<p>SDS</p>
+<h4 id="超日志hyperloglog">超日志(hyperloglog)</h4>
+<p>稀疏矩阵 + 稠密矩阵</p>
+<h4 id="地理位置geospatial">地理位置(geospatial)</h4>
+<p>有序集合（Sorted Set）</p>
+<h2 id="section-2-单机数据库的实现">Section 2 单机数据库的实现</h2>
+<blockquote>
+<h3 id="下面的内容还没写"><strong>下面的内容还没写</strong></h3>
+</blockquote>
+<h3 id="chapter-9-数据库">chapter 9 数据库</h3>
+<h3 id="chapter-10-rdb持久化">chapter 10 RDB持久化</h3>
+<h3 id="chapter-11-aof持久化">chapter 11 AOF持久化</h3>
+<h3 id="chapter-12-事件">chapter 12 事件</h3>
+<h3 id="chapter-13-客户端">chapter 13 客户端</h3>
+<h3 id="chapter-14-服务器">chapter 14 服务器</h3>
+<h2 id="section-3-多机数据库的实现">Section 3 多机数据库的实现</h2>
+<h3 id="chapter-15-复制">chapter 15 复制</h3>
+<h3 id="chapter-16-sentinel">chapter 16 sentinel</h3>
+<h3 id="chapter-17-集群">chapter 17 集群</h3>
+<h2 id="section-4-独立功能的实现">Section 4 独立功能的实现</h2>
+<h3 id="chapter-18-发布与订阅">chapter 18 发布与订阅</h3>
+<h3 id="chapter-19-事务">chapter 19 事务</h3>
+<h3 id="chapter-20-lua脚本">chapter 20 Lua脚本</h3>
+<h3 id="chapter-21-排序">chapter 21 排序</h3>
+<h3 id="chapter-22-二进制位数组">chapter 22 二进制位数组</h3>
+<h3 id="chapter-23-慢查询日志">chapter 23 慢查询日志</h3>
+<h3 id="chapter-24-监视器">chapter 24 监视器</h3>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Redis/" rel="tag"># Redis</a>
+              <a href="/tags/%E4%B8%AD%E9%97%B4%E4%BB%B6/" rel="tag"># 中间件</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/08/14/Project%20Euler/PE612/" rel="prev" title="PE612">
+                  <i class="fa fa-chevron-left"></i> PE612
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Weilong Zhang</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"mhchem":true,"tags":"ams","js":{"url":"https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js","integrity":"sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+
+</body>
+</html>
