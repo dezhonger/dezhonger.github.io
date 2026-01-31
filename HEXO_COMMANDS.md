@@ -54,3 +54,22 @@ hexo g -d
 ```bash
 npm install
 ```
+
+## 主题子模块（themes/next）手动同步到最新（方案 A）
+
+> 先确保 `themes/next` 里的改动已经提交并推送到远端，否则主仓库更新不到最新提交。
+
+**步骤：在主仓库根目录执行**
+
+```bash
+git submodule update --remote --merge
+git status -sb
+git add themes/next
+git commit -m "Update themes/next submodule"
+```
+
+**如需推送主仓库：**
+
+```bash
+git push
+```
