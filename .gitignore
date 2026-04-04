@@ -6,3 +6,10 @@ node_modules/
 public/
 .deploy*/
 _multiconfig.yml
+
+# Editor config
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
