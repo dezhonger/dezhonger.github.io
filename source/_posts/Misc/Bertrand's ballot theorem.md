@@ -16,6 +16,8 @@ $$
 \binom{p+q}{p}
 $$
 
+<!-- more -->
+
 ---
 
 ## 1. A Always Strictly Ahead of B
