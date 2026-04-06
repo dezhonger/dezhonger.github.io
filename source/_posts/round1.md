@@ -2,11 +2,11 @@
 title: 牛客周赛 Round 1
 date: 2025-05-17 00:00:00
 mathjax: true
+tags:
+  - Algorithm
+  - Nowcoder
 categories:
   - 算法竞赛
-tags:
-  - 牛客
-  - 题解
 ---
 
 - 比赛链接：[牛客周赛 Round 1](https://ac.nowcoder.com/acm/contest/60245#question)
