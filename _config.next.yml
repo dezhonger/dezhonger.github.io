@@ -1,0 +1,11 @@
+custom_file_path:
+  style: source/_data/styles.styl
+  bodyEnd: source/_data/body-end.njk
+
+menu:
+  home: / || fa fa-home
+  blog: /blog/ || fa fa-book
+  about: /about/ || fa fa-user
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-th
+  archives: /archives/ || fa fa-archive

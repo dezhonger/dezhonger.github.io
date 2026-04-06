@@ -1,0 +1,66 @@
+<div id="dz-variant-dock" aria-label="Theme variants">
+  <span class="dz-variant-label">风格</span>
+  <button type="button" data-dz-variant="mist" aria-pressed="false">雾白</button>
+  <button type="button" data-dz-variant="sand" aria-pressed="false">暖砂</button>
+  <button type="button" data-dz-variant="slate" aria-pressed="false">石墨</button>
+</div>
+
+<script>
+  (() => {
+    const key = "dz-variant";
+    const variants = ["mist", "sand", "slate"];
+    const root = document.documentElement;
+    const body = document.body;
+    const mainInner = document.querySelector(".main-inner");
+
+    let pageKind = "unknown";
+    if (mainInner) {
+      if (mainInner.classList.contains("post")) pageKind = "post";
+      else if (mainInner.classList.contains("index")) pageKind = "index";
+      else if (mainInner.classList.contains("archive")) pageKind = "archive";
+      else if (mainInner.classList.contains("page")) pageKind = "page";
+    }
+    body.setAttribute("data-dz-page", pageKind);
+
+    const path = (location.pathname || "/").toLowerCase();
+    let routeKind = "other";
+    if (path === "/" || path.startsWith("/blog")) routeKind = "blog";
+    else if (path.startsWith("/about")) routeKind = "about";
+    else if (path.startsWith("/tags")) routeKind = "tags";
+    else if (path.startsWith("/categories")) routeKind = "categories";
+    else if (path.startsWith("/archives")) routeKind = "archives";
+    else if (/^\/\d{4}\//.test(path)) routeKind = "post";
+    body.setAttribute("data-dz-route", routeKind);
+    body.classList.add(`dz-route-${routeKind}`);
+
+    let initial = "mist";
+    try {
+      const saved = localStorage.getItem(key);
+      const normalized = saved === "ink" ? "slate" : saved;
+      if (variants.includes(normalized)) initial = normalized;
+    } catch (_) {}
+
+    const buttons = Array.from(document.querySelectorAll("#dz-variant-dock button[data-dz-variant]"));
+
+    const applyVariant = (variant) => {
+      root.setAttribute("data-dz-variant", variant);
+      buttons.forEach(button => {
+        const isActive = button.getAttribute("data-dz-variant") === variant;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+      try {
+        localStorage.setItem(key, variant);
+      } catch (_) {}
+    };
+
+    applyVariant(initial);
+
+    buttons.forEach(button => {
+      button.addEventListener("click", () => {
+        const variant = button.getAttribute("data-dz-variant");
+        if (variants.includes(variant)) applyVariant(variant);
+      });
+    });
+  })();
+</script>

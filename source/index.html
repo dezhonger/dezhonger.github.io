@@ -1,0 +1,365 @@
+---
+layout: false
+comments: false
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dezhonger</title>
+    <style>
+      :root {
+        --bg: #fafafa;
+        --text: #111827;
+        --muted: #6b7280;
+        --line: #e5e7eb;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        min-height: 100vh;
+      }
+
+      .wrap {
+        width: min(860px, 92vw);
+        margin: 0 auto;
+        padding: 40px 0 56px;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .brand {
+        text-decoration: none;
+        color: var(--text);
+        font-size: 22px;
+        font-weight: 700;
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .nav {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .nav a {
+        text-decoration: none;
+        color: var(--muted);
+        font-size: 14px;
+        transition: color 0.2s ease;
+      }
+
+      .nav a:hover {
+        color: var(--text);
+      }
+
+      .lang-switch {
+        display: inline-flex;
+        gap: 6px;
+      }
+
+      .lang-switch button {
+        border: 1px solid var(--line);
+        background: var(--white);
+        color: var(--muted);
+        border-radius: 999px;
+        font-size: 12px;
+        padding: 4px 10px;
+        cursor: pointer;
+      }
+
+      .lang-switch button.active {
+        color: var(--text);
+        border-color: var(--text);
+      }
+
+      .hero {
+        margin-top: 42px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(30px, 6vw, 44px);
+        line-height: 1.2;
+      }
+
+      .hero p {
+        margin: 16px 0 0;
+        font-size: 17px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+      }
+
+      .intro {
+        margin-top: 42px;
+      }
+
+      .intro h2 {
+        margin: 0;
+        font-size: 24px;
+      }
+
+      .intro-lead {
+        margin: 12px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .intro-grid {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .intro-card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--white);
+        padding: 14px;
+      }
+
+      .intro-card h3 {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .intro-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .button {
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+        border: 1px solid var(--line);
+        background: var(--white);
+        color: var(--text);
+      }
+
+      .button.primary {
+        background: var(--text);
+        color: var(--white);
+        border-color: var(--text);
+      }
+
+      .footer {
+        margin-top: 56px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 680px) {
+        .header {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header-right {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .intro-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="header">
+        <a class="brand" href="/">Dezhonger</a>
+        <div class="header-right">
+          <nav class="nav" aria-label="Primary">
+            <a href="/blog/" data-i18n="navBlog">Blog</a>
+            <a href="/about/" data-i18n="navAbout">About</a>
+            <a href="/tags/" data-i18n="navTags">Tags</a>
+            <a href="/archives/" data-i18n="navArchives">Archives</a>
+          </nav>
+          <div class="lang-switch" role="group" aria-label="Language switch">
+            <button type="button" data-lang="en" class="active">EN</button>
+            <button type="button" data-lang="zh">中</button>
+          </div>
+        </div>
+      </header>
+
+      <section class="hero">
+        <h1 data-i18n="heroTitle">Hi, I am Dezhonger.</h1>
+        <p data-i18n="heroDesc">This is a minimal homepage. The post stream lives on the blog page.</p>
+        <div class="actions">
+          <a class="button primary" href="/blog/" data-i18n="ctaBlog">Go to Blog</a>
+          <a class="button" href="/about/" data-i18n="ctaAbout">About Me</a>
+        </div>
+      </section>
+
+      <section class="intro" aria-labelledby="blog-intro-title">
+        <h2 id="blog-intro-title" data-i18n="introTitle">About This Blog</h2>
+        <p class="intro-lead" data-i18n="introLead">I share practical notes from algorithms, contests, and software engineering projects.</p>
+        <div class="intro-grid">
+          <article class="intro-card">
+            <h3 data-i18n="card1Title">Algorithm Notes</h3>
+            <p data-i18n="card1Desc">Clear explanations for data structures, graph tricks, and math-based techniques.</p>
+          </article>
+          <article class="intro-card">
+            <h3 data-i18n="card2Title">Contest Write-ups</h3>
+            <p data-i18n="card2Desc">Step-by-step solution ideas from AtCoder, Nowcoder, LeetCode, and Project Euler.</p>
+          </article>
+          <article class="intro-card">
+            <h3 data-i18n="card3Title">Engineering Logs</h3>
+            <p data-i18n="card3Desc">Notes on backend tools, debugging workflow, and lessons from real coding tasks.</p>
+          </article>
+          <article class="intro-card">
+            <h3 data-i18n="card4Title">Personal Life</h3>
+            <p data-i18n="card4Desc">Small updates about daily life, routines, and thoughts beyond coding.</p>
+          </article>
+          <article class="intro-card">
+            <h3 data-i18n="card5Title">Study Notes</h3>
+            <p data-i18n="card5Desc">Concise summaries of what I learn from courses, docs, and experiments.</p>
+          </article>
+          <article class="intro-card">
+            <h3 data-i18n="card6Title">Book Reflections</h3>
+            <p data-i18n="card6Desc">Key takeaways and reflections from books on tech, growth, and thinking.</p>
+          </article>
+        </div>
+      </section>
+
+      <p class="footer">&copy; <span id="year"></span> Dezhonger. <span data-i18n="footerNote">Keep building, keep learning.</span></p>
+    </main>
+
+    <script>
+      const translations = {
+        en: {
+          navBlog: "Blog",
+          navAbout: "About",
+          navTags: "Tags",
+          navArchives: "Archives",
+          heroTitle: "Hi, I am Dezhonger.",
+          heroDesc: "This is a minimal homepage. The post stream lives on the blog page.",
+          ctaBlog: "Go to Blog",
+          ctaAbout: "About Me",
+          introTitle: "About This Blog",
+          introLead: "I share practical notes from algorithms, contests, and software engineering projects.",
+          card1Title: "Algorithm Notes",
+          card1Desc: "Clear explanations for data structures, graph tricks, and math-based techniques.",
+          card2Title: "Contest Write-ups",
+          card2Desc: "Step-by-step solution ideas from AtCoder, Nowcoder, LeetCode, and Project Euler.",
+          card3Title: "Engineering Logs",
+          card3Desc: "Notes on backend tools, debugging workflow, and lessons from real coding tasks.",
+          card4Title: "Personal Life",
+          card4Desc: "Small updates about daily life, routines, and thoughts beyond coding.",
+          card5Title: "Study Notes",
+          card5Desc: "Concise summaries of what I learn from courses, docs, and experiments.",
+          card6Title: "Book Reflections",
+          card6Desc: "Key takeaways and reflections from books on tech, growth, and thinking.",
+          footerNote: "Keep building, keep learning."
+        },
+        zh: {
+          navBlog: "博客",
+          navAbout: "关于",
+          navTags: "标签",
+          navArchives: "归档",
+          heroTitle: "你好，我是 Dezhonger。",
+          heroDesc: "这是一个极简首页。这里不展示文章流，文章内容请前往博客列表。",
+          ctaBlog: "进入博客",
+          ctaAbout: "了解我",
+          introTitle: "这个博客写什么",
+          introLead: "这里记录我在算法、竞赛与工程实践中的可复用经验与思考。",
+          card1Title: "算法笔记",
+          card1Desc: "整理数据结构、图论技巧和数学方法，强调直观与可实现性。",
+          card2Title: "竞赛题解",
+          card2Desc: "分享 AtCoder、Nowcoder、LeetCode、Project Euler 的解题思路。",
+          card3Title: "工程日志",
+          card3Desc: "记录后端工具链、调试流程以及真实开发中的复盘总结。",
+          card4Title: "个人生活",
+          card4Desc: "记录日常节奏、生活片段以及编程之外的所思所想。",
+          card5Title: "学习笔记",
+          card5Desc: "整理课程、文档和实践中的关键知识点与踩坑经验。",
+          card6Title: "读书感悟",
+          card6Desc: "分享技术与成长类书籍的重点摘录和阅读反思。",
+          footerNote: "持续构建，持续学习。"
+        }
+      };
+
+      const langKey = "dz-home-lang";
+
+      function applyLanguage(lang) {
+        const dict = translations[lang] || translations.en;
+        document.documentElement.lang = lang === "zh" ? "zh-CN" : "en";
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (dict[key]) {
+            el.textContent = dict[key];
+          }
+        });
+        document.querySelectorAll(".lang-switch button").forEach((button) => {
+          const active = button.getAttribute("data-lang") === lang;
+          button.classList.toggle("active", active);
+        });
+        try {
+          localStorage.setItem(langKey, lang);
+        } catch (_) {}
+      }
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      let initial = "en";
+      try {
+        const saved = localStorage.getItem(langKey);
+        if (saved === "en" || saved === "zh") {
+          initial = saved;
+        }
+      } catch (_) {}
+
+      applyLanguage(initial);
+
+      document.querySelectorAll(".lang-switch button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const lang = button.getAttribute("data-lang");
+          if (lang === "en" || lang === "zh") {
+            applyLanguage(lang);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
