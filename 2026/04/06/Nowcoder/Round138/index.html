@@ -20,17 +20,16 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="比赛链接：牛客周赛 Round 138    题号 题目 难度&#x2F;评分 分类 关键知识点     A 小苯的转盘游戏 - 构造&#x2F;数论 可达性、线性组合   B 小苯的最大异或 - 位运算&#x2F;暴力 状态枚举、二进制右移   C 小苯的数位排序 - 贪心 从右到左约束、数位和链   D 小苯的路径计数 - 树上 DP 祖">
+    <meta name="description" content="比赛链接：牛客周赛 Round 138    题号 题目 难度&#x2F;评分 分类 关键知识点     A 小苯的转盘游戏 - 构造&#x2F;数论 可达性、线性组合   B 小苯的最大异或 - 位运算&#x2F;暴力 状态枚举、二进制右移   C 小苯的数位排序 - 贪心 从右到左约束、数位和链   D 小苯的路径计数 - 树上 DP 祖先链贡献">
 <meta property="og:type" content="article">
 <meta property="og:title" content="牛客周赛 Round 138">
 <meta property="og:url" content="http://example.com/2026/04/06/Nowcoder/Round138/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="比赛链接：牛客周赛 Round 138    题号 题目 难度&#x2F;评分 分类 关键知识点     A 小苯的转盘游戏 - 构造&#x2F;数论 可达性、线性组合   B 小苯的最大异或 - 位运算&#x2F;暴力 状态枚举、二进制右移   C 小苯的数位排序 - 贪心 从右到左约束、数位和链   D 小苯的路径计数 - 树上 DP 祖">
+<meta property="og:description" content="比赛链接：牛客周赛 Round 138    题号 题目 难度&#x2F;评分 分类 关键知识点     A 小苯的转盘游戏 - 构造&#x2F;数论 可达性、线性组合   B 小苯的最大异或 - 位运算&#x2F;暴力 状态枚举、二进制右移   C 小苯的数位排序 - 贪心 从右到左约束、数位和链   D 小苯的路径计数 - 树上 DP 祖先链贡献">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-04-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2026-04-06T12:05:33.487Z">
+<meta property="article:modified_time" content="2026-04-06T12:09:39.771Z">
 <meta property="article:author" content="Weilong Zhang">
-<meta property="article:tag" content="题解">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="Nowcoder">
 <meta name="twitter:card" content="summary">
@@ -254,7 +253,7 @@ mjx-container[display="true"] + br {
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">11</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -323,7 +322,7 @@ mjx-container[display="true"] + br {
       <span class="post-meta-item-text">Posted on</span>
       
 
-      <time title="Created: 2026-04-06 00:00:00 / Modified: 20:05:33" itemprop="dateCreated datePublished" datetime="2026-04-06T00:00:00+08:00">2026-04-06</time>
+      <time title="Created: 2026-04-06 00:00:00 / Modified: 20:09:39" itemprop="dateCreated datePublished" datetime="2026-04-06T00:00:00+08:00">2026-04-06</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -345,9 +344,7 @@ mjx-container[display="true"] + br {
     
     
     <div class="post-body" itemprop="articleBody">
-        <span id="more"></span>
-
-<p>比赛链接：<a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/131111">牛客周赛 Round
+        <p>比赛链接：<a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/131111">牛客周赛 Round
 138</a></p>
 <table>
 <thead>
@@ -404,6 +401,8 @@ mjx-container[display="true"] + br {
 </tr>
 </tbody>
 </table>
+<span id="more"></span>
+
 <h2 id="a---小苯的转盘游戏">A - 小苯的转盘游戏</h2>
 <p><strong>题意</strong></p>
 <p>题目链接：<a target="_blank" rel="noopener" href="https://ac.nowcoder.com/acm/contest/131111/A">131111A</a></p>
@@ -557,7 +556,6 @@ pair”自动满足 <span class="math inline"><mjx-container class="MathJax" jax
 
     <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag"># 题解</a>
               <a href="/tags/Algorithm/" rel="tag"># Algorithm</a>
               <a href="/tags/Nowcoder/" rel="tag"># Nowcoder</a>
           </div>
