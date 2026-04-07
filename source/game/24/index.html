@@ -1,0 +1,369 @@
+﻿---
+layout: false
+comments: false
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 Game | Game Lab</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --surface: #ffffff;
+        --line: #dbe3ef;
+        --text: #111827;
+        --muted: #6b7280;
+        --ok: #15803d;
+        --bad: #dc2626;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #f8fbff, #f5f7fb);
+        color: var(--text);
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      .wrap {
+        width: min(980px, 94vw);
+        margin: 0 auto;
+        padding: 26px 0 48px;
+      }
+
+      .topbar {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+      }
+
+      .brand {
+        text-decoration: none;
+        color: var(--text);
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .nav a {
+        text-decoration: none;
+        color: var(--muted);
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 14px;
+      }
+
+      .nav a:hover,
+      .nav a.active {
+        color: var(--text);
+        background: #edf4ff;
+        border-color: var(--line);
+      }
+
+      .panel {
+        margin-top: 14px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+        padding: 18px;
+      }
+
+      .panel h1 {
+        margin: 0;
+        font-size: 30px;
+      }
+
+      .sub {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .algo {
+        margin-top: 12px;
+        border: 1px dashed #c7d5ea;
+        border-radius: 12px;
+        background: #f8fbff;
+        color: #41526c;
+        padding: 10px 12px;
+        line-height: 1.7;
+        font-size: 13px;
+      }
+
+      .cards {
+        margin-top: 14px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .card {
+        width: 70px;
+        height: 92px;
+        border: 1px solid #c9d4e6;
+        border-radius: 12px;
+        background: #fbfdff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        font-weight: 700;
+      }
+
+      .expr {
+        margin-top: 12px;
+        width: min(580px, 100%);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 15px;
+        outline: none;
+      }
+
+      .expr:focus {
+        border-color: #a8c2f0;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      }
+
+      .controls {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--text);
+        font-size: 14px;
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      button.primary {
+        background: var(--text);
+        border-color: var(--text);
+        color: #fff;
+      }
+
+      .status {
+        margin-top: 10px;
+        min-height: 22px;
+        font-size: 14px;
+      }
+
+      .status.ok { color: var(--ok); }
+      .status.bad { color: var(--bad); }
+
+      .hint {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+
+      @media (max-width: 640px) {
+        .card {
+          width: 62px;
+          height: 82px;
+          font-size: 26px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="topbar">
+        <a class="brand" href="/">Dezhonger</a>
+        <nav class="nav" aria-label="Game navigation">
+          <a href="/game/">Game Hub</a>
+          <a href="/game/sudoku/">Sudoku</a>
+          <a href="/game/24/" class="active">24 Game</a>
+          <a href="/game/2048/">2048</a>
+          <a href="/game/minesweeper/">Minesweeper</a>
+          <a href="/game/snake/">Snake</a>
+          <a href="/game/hanoi/">Hanoi</a>
+          <a href="/game/tetris/">Tetris</a>
+          <a href="/blog/">Blog</a>
+        </nav>
+      </header>
+
+      <section class="panel">
+        <h1>24 Game</h1>
+        <p class="sub">Use 4 numbers and + - * / ( ) to make 24. Each number must be used exactly once.</p>
+
+        <div class="algo">
+          Solver algorithm: DFS over pair selections and 6 operations. Recurse until one value remains and test whether it equals 24.
+        </div>
+
+        <div id="cards" class="cards"></div>
+        <input id="expr" class="expr" type="text" placeholder="Example: (8-3)*(7-5)+14" autocomplete="off">
+
+        <div class="controls">
+          <button id="new">New Cards</button>
+          <button id="check" class="primary">Check</button>
+          <button id="solve">Show One Solution</button>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div class="hint">Allowed characters: digits, spaces, parentheses, and + - * /. Numbers 10-13 are treated as two-digit values.</div>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const cardsEl = document.getElementById('cards');
+        const exprEl = document.getElementById('expr');
+        const statusEl = document.getElementById('status');
+
+        let nums = [];
+
+        function setStatus(msg, type) {
+          statusEl.textContent = msg;
+          statusEl.className = 'status ' + (type || '');
+        }
+
+        function normalize(arr) {
+          return arr.slice().sort((a, b) => a - b).join(',');
+        }
+
+        function solve24(arr) {
+          const EPS = 1e-6;
+
+          function dfs(items) {
+            if (items.length === 1) {
+              if (Math.abs(items[0].value - 24) < EPS) return items[0].expr;
+              return null;
+            }
+
+            for (let i = 0; i < items.length; i++) {
+              for (let j = i + 1; j < items.length; j++) {
+                const rest = [];
+                for (let k = 0; k < items.length; k++) {
+                  if (k !== i && k !== j) rest.push(items[k]);
+                }
+
+                const a = items[i];
+                const b = items[j];
+                const next = [
+                  { value: a.value + b.value, expr: '(' + a.expr + '+' + b.expr + ')' },
+                  { value: a.value - b.value, expr: '(' + a.expr + '-' + b.expr + ')' },
+                  { value: b.value - a.value, expr: '(' + b.expr + '-' + a.expr + ')' },
+                  { value: a.value * b.value, expr: '(' + a.expr + '*' + b.expr + ')' }
+                ];
+
+                if (Math.abs(b.value) > EPS) {
+                  next.push({ value: a.value / b.value, expr: '(' + a.expr + '/' + b.expr + ')' });
+                }
+                if (Math.abs(a.value) > EPS) {
+                  next.push({ value: b.value / a.value, expr: '(' + b.expr + '/' + a.expr + ')' });
+                }
+
+                for (const candidate of next) {
+                  const found = dfs(rest.concat(candidate));
+                  if (found) return found;
+                }
+              }
+            }
+
+            return null;
+          }
+
+          return dfs(arr.map(n => ({ value: n, expr: String(n) })));
+        }
+
+        function drawCards() {
+          let solution = null;
+          do {
+            nums = Array.from({ length: 4 }, () => Math.floor(Math.random() * 13) + 1);
+            solution = solve24(nums);
+          } while (!solution);
+
+          cardsEl.innerHTML = '';
+          nums.forEach(n => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.textContent = String(n);
+            cardsEl.appendChild(card);
+          });
+
+          exprEl.value = '';
+          setStatus('A new solvable set has been generated.', '');
+        }
+
+        function legalChars(expr) {
+          return /^[\d+\-*/().\s]+$/.test(expr);
+        }
+
+        function checkExpression() {
+          const expr = exprEl.value.trim();
+          if (!expr) {
+            setStatus('Please enter an expression first.', 'bad');
+            return;
+          }
+
+          if (!legalChars(expr)) {
+            setStatus('Expression contains invalid characters.', 'bad');
+            return;
+          }
+
+          const used = (expr.match(/\d+/g) || []).map(Number);
+          if (used.length !== 4 || normalize(used) !== normalize(nums)) {
+            setStatus('Use exactly the 4 given numbers, each once.', 'bad');
+            return;
+          }
+
+          let value;
+          try {
+            value = Function('"use strict"; return (' + expr + ');')();
+          } catch (_) {
+            setStatus('Invalid expression format.', 'bad');
+            return;
+          }
+
+          if (!Number.isFinite(value)) {
+            setStatus('Invalid result (possibly division by zero).', 'bad');
+            return;
+          }
+
+          if (Math.abs(value - 24) < 1e-6) {
+            setStatus('Correct. Result is 24.', 'ok');
+          } else {
+            setStatus('Result is ' + value + ', not 24 yet.', 'bad');
+          }
+        }
+
+        drawCards();
+
+        document.getElementById('new').addEventListener('click', drawCards);
+        document.getElementById('check').addEventListener('click', checkExpression);
+        document.getElementById('solve').addEventListener('click', () => {
+          const ans = solve24(nums);
+          if (ans) {
+            setStatus('One valid solution: ' + ans + ' = 24', 'ok');
+          } else {
+            setStatus('No solution for this set. Try new cards.', 'bad');
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>

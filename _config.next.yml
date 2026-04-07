@@ -5,6 +5,7 @@ custom_file_path:
 menu:
   home: / || fa fa-home
   blog: /blog/ || fa fa-book
+  game: /game/ || fa fa-gamepad
   about: /about/ || fa fa-user
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th
