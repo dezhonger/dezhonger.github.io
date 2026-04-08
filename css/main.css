@@ -2667,7 +2667,7 @@ mjx-container[display='true'] + br {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #d496af;
+  background: #d9c281;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -3024,6 +3024,13 @@ body[data-dz-page="page"] .sidebar-toggle,
 body[data-dz-page="archive"] .sidebar,
 body[data-dz-page="archive"] .sidebar-toggle {
   display: none;
+}
+@media (min-width: 992px) {
+  body[data-dz-page="index"],
+  body[data-dz-page="page"],
+  body[data-dz-page="archive"] {
+    padding-left: 0 !important;
+  }
 }
 /* Route-level styling hooks for independent page themes. */
 .dz-route-about .post-block {
