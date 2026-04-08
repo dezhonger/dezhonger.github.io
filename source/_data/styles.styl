@@ -386,6 +386,14 @@ body[data-dz-page="archive"] .sidebar-toggle {
   display: none;
 }
 
+@media (min-width: 992px) {
+  body[data-dz-page="index"],
+  body[data-dz-page="page"],
+  body[data-dz-page="archive"] {
+    padding-left: 0 !important;
+  }
+}
+
 /* Route-level styling hooks for independent page themes. */
 .dz-route-about .post-block {
   border-left: 4px solid var(--dz-accent);
