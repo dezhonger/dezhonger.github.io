@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(contest-blog-writer)",
+      "Skill(contest-blog-writer:*)",
+      "WebFetch(domain:leetcode.com)"
+    ]
+  }
+}
