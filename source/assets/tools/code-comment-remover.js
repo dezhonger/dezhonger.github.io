@@ -210,9 +210,13 @@
   function openDiffPreview() {
     const original = readInput()
     const modified = readOutput()
-    toolkit.saveDiffPayload({ original, modified })
-    const diffUrl = new URL('/diff/', window.location.origin).href
-    window.open(diffUrl, '_blank', 'noopener')
+    const payloadKey = toolkit.saveDiffPayload({ original, modified })
+    const diffUrlObj = new URL('/diff/', window.location.origin)
+    if (payloadKey) {
+      diffUrlObj.searchParams.set(toolkit.diffPayloadQueryKey || 'payload', payloadKey)
+    }
+    const diffUrl = diffUrlObj.href
+    window.open(diffUrl, '_blank')
   }
 
   function copyResult() {

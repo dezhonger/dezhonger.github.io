@@ -331,6 +331,38 @@ body.tool-body {
   min-height: 760px;
 }
 
+.monaco-host.monaco-visibility-fallback .monaco-editor,
+.monaco-host.monaco-visibility-fallback .monaco-diff-editor,
+.monaco-host.monaco-visibility-fallback .view-lines,
+.monaco-host.monaco-visibility-fallback .view-line,
+.monaco-host.monaco-visibility-fallback .view-line span,
+.monaco-host.monaco-visibility-fallback .mtk1,
+.monaco-host.monaco-visibility-fallback .mtk2,
+.monaco-host.monaco-visibility-fallback .mtk3,
+.monaco-host.monaco-visibility-fallback .mtk4,
+.monaco-host.monaco-visibility-fallback .mtk5,
+.monaco-host.monaco-visibility-fallback .mtk6,
+.monaco-host.monaco-visibility-fallback .mtk7,
+.monaco-host.monaco-visibility-fallback .mtk8,
+.monaco-host.monaco-visibility-fallback .mtk9,
+.monaco-host.monaco-visibility-fallback .mtk10,
+.monaco-host.monaco-visibility-fallback .mtk11,
+.monaco-host.monaco-visibility-fallback .mtk12,
+.monaco-host.monaco-visibility-fallback .mtk13,
+.monaco-host.monaco-visibility-fallback .mtk14,
+.monaco-host.monaco-visibility-fallback .mtk15,
+.monaco-host.monaco-visibility-fallback .mtk16,
+.monaco-host.monaco-visibility-fallback .mtk17,
+.monaco-host.monaco-visibility-fallback .mtk18,
+.monaco-host.monaco-visibility-fallback .mtk19,
+.monaco-host.monaco-visibility-fallback .mtk20 {
+  color: #111111 !important;
+  -webkit-text-fill-color: #111111 !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+  mix-blend-mode: normal !important;
+}
+
 .tool-empty {
   margin: 14px 0 0;
   color: var(--tool-muted);
