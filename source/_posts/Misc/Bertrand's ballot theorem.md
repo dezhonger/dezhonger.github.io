@@ -1,6 +1,7 @@
 ---
 title: Bertrand's ballot theorem
 date: 2026-3-19 02:09:37
+updated: '2026-04-03T03:47:51.432+08:00'
 mathjax: true
 tags:
   - Math

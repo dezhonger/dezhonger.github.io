@@ -1,6 +1,7 @@
 ---
 title: 矩阵树定理
 date: 2025-5-30 14:44:26
+updated: '2025-05-30T18:38:17.951+08:00'
 mathjax: true
 tags:
 - Algorithm

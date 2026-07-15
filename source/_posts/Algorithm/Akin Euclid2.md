@@ -1,6 +1,7 @@
 ---
 title: 类欧几里得算法(二)
 date: 2025-5-28 22:30:57
+updated: '2025-05-28T23:04:28.086+08:00'
 mathjax: true
 tags:
 - Algorithm
