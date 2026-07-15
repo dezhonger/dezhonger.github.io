@@ -1,0 +1,116 @@
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码注释去除器 | Dezhonger</title>
+    <meta
+      name="description"
+      content="支持多语言注释去除、复制结果，并在复制后自动打开文本差异对比页面。"
+    >
+    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260602f">
+  </head>
+  <body class="tool-body">
+    <main class="tool-shell">
+      <header class="tool-topbar">
+        <a class="tool-brand" href="/">Dezhonger</a>
+        <nav class="tool-nav" aria-label="Primary navigation">
+          <a href="/blog/">Blog</a>
+          <a href="/game/">Game</a>
+          <a href="/about/">About</a>
+          <a href="/tools/" class="active">Tools</a>
+          <a href="/tags/">Tags</a>
+          <a href="/archives/">Archives</a>
+        </nav>
+      </header>
+
+      <section class="tool-hero">
+        <div>
+          <p class="tool-eyebrow">Utility</p>
+          <h1>代码注释去除器</h1>
+          <p>
+            这是从本地工具页完整迁移过来的公网版本。保留原有的多语言支持、注释清理选项、复制结果能力，以及复制后自动跳转到文本对比页的行为。
+          </p>
+        </div>
+        <div class="hero-actions">
+          <a class="tool-link-btn primary" href="/diff/">打开文本对比</a>
+          <a class="tool-link-btn secondary" href="/">返回首页</a>
+        </div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="panel-head">
+          <h2>多语言注释去除工具</h2>
+          <div class="panel-note">复制结果后会自动带着原文和处理结果打开 diff 页。</div>
+        </div>
+
+        <div class="controls-card">
+          <div class="control-row">
+            <label class="tool-field">
+              <span>语言</span>
+              <select id="language-select" aria-label="选择语言"></select>
+            </label>
+
+            <label class="tool-option">
+              <input id="opt-trimTrailing" type="checkbox">
+              去除行尾空格
+            </label>
+            <label class="tool-option">
+              <input id="opt-removeEmpty" type="checkbox">
+              去除空行
+            </label>
+            <label class="tool-option">
+              <input id="opt-removeCommentLines" type="checkbox">
+              删除由注释产生的空行
+            </label>
+            <label class="tool-option">
+              <input id="opt-keepLineComment" type="checkbox">
+              保留整行注释
+            </label>
+            <label class="tool-option" id="keep-block-wrap">
+              <input id="opt-keepBlockComment" type="checkbox">
+              保留块注释
+            </label>
+            <label class="tool-option" id="replace-long-long-wrap">
+              <input id="opt-replaceLongLong" type="checkbox">
+              替换 long long→LL/ULL
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button id="process-btn" class="tool-btn primary" type="button">去除注释</button>
+            <button id="copy-btn" class="tool-btn secondary" type="button">复制结果</button>
+            <button id="clear-btn" class="tool-btn secondary" type="button">清除文本</button>
+            <div class="status-strip" aria-live="polite">
+              <span id="copy-status" class="status-pill success" hidden></span>
+              <span id="error-status" class="status-pill error" hidden></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="language-desc" class="tool-banner"></div>
+
+        <div class="editor-grid">
+          <section class="editor-card">
+            <div class="editor-label">原始代码</div>
+            <div id="input-editor" class="monaco-host"></div>
+          </section>
+
+          <section class="editor-card">
+            <div class="editor-label">去掉注释后的代码</div>
+            <div id="output-editor" class="monaco-host"></div>
+          </section>
+        </div>
+
+        <noscript>
+          <div class="tool-noscript">这个页面依赖 JavaScript 运行，当前环境未启用。</div>
+        </noscript>
+      </section>
+    </main>
+
+    <script src="/vendor/monaco/vs/loader.js"></script>
+    <script src="/assets/tools/code-comment-toolkit.js?v=20260602f"></script>
+    <script src="/assets/tools/code-comment-remover.js?v=20260602f"></script>
+  </body>
+</html>

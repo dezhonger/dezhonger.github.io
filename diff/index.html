@@ -1,0 +1,83 @@
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文本对比工具 | Dezhonger</title>
+    <meta name="description" content="使用 Monaco Diff Editor 对比两段文本差异。">
+    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260602f">
+  </head>
+  <body class="tool-body">
+    <main class="tool-shell">
+      <header class="tool-topbar">
+        <a class="tool-brand" href="/">Dezhonger</a>
+        <nav class="tool-nav" aria-label="Primary navigation">
+          <a href="/blog/">Blog</a>
+          <a href="/game/">Game</a>
+          <a href="/about/">About</a>
+          <a href="/tools/" class="active">Tools</a>
+          <a href="/tags/">Tags</a>
+          <a href="/archives/">Archives</a>
+        </nav>
+      </header>
+
+      <section class="tool-hero">
+        <div>
+          <p class="tool-eyebrow">Utility</p>
+          <h1>文本对比工具</h1>
+          <p>
+            这个页面保留了原工具里的 Monaco Diff Editor 交互。你可以手动输入文本，也可以从注释去除器复制结果后自动带入左右两侧的内容进行比较。
+          </p>
+        </div>
+        <div class="hero-actions">
+          <a class="tool-link-btn primary" href="/code-comment-remover/">返回注释去除器</a>
+          <a class="tool-link-btn secondary" href="/">返回首页</a>
+        </div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="panel-head">
+          <h2>文本对比工具（Diff）</h2>
+          <div class="panel-note">左侧原始文本，右侧修改后文本，左右都可以直接编辑。</div>
+        </div>
+
+        <div class="tool-banner">
+          <p>本工具基于 <strong>Monaco Diff Editor</strong> 实现，用于对比两段文本的差异。</p>
+          <ul>
+            <li>左侧为「原始文本」，右侧为「修改后文本」。</li>
+            <li>支持自动换行、行号显示，高亮展示增加、删除、修改的部分。</li>
+            <li>点击「交换左右」可以快速交换原始/修改文本。</li>
+            <li>点击「示例」可自动填入一组示例文本，方便体验效果。</li>
+          </ul>
+        </div>
+
+        <div class="controls-card">
+          <div class="action-row">
+            <button id="example-btn" class="tool-btn secondary" type="button">填充示例</button>
+            <button id="swap-btn" class="tool-btn secondary" type="button">交换左右</button>
+            <button id="clear-btn" class="tool-btn secondary" type="button">清空</button>
+            <button id="copy-btn" class="tool-btn primary" type="button">复制右侧文本</button>
+            <div class="status-strip" aria-live="polite">
+              <span id="copy-status" class="status-pill success" hidden></span>
+              <span id="error-status" class="status-pill error" hidden></span>
+            </div>
+          </div>
+        </div>
+
+        <section class="editor-card" style="margin-top: 16px; min-height: 800px;">
+          <div class="editor-label">原始文本 vs 修改后文本</div>
+          <div id="diff-editor" class="monaco-host diff-host"></div>
+        </section>
+
+        <noscript>
+          <div class="tool-noscript">这个页面依赖 JavaScript 运行，当前环境未启用。</div>
+        </noscript>
+      </section>
+    </main>
+
+    <script src="/vendor/monaco/vs/loader.js"></script>
+    <script src="/assets/tools/code-comment-toolkit.js?v=20260602f"></script>
+    <script src="/assets/tools/text-diff.js?v=20260602f"></script>
+  </body>
+</html>

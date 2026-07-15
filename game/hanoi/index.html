@@ -1,0 +1,412 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tower of Hanoi | Game Lab</title>
+    <style>
+      :root {
+        --bg: #f5f7fb;
+        --surface: #ffffff;
+        --line: #dbe3ef;
+        --text: #111827;
+        --muted: #6b7280;
+        --ok: #15803d;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #f8fbff, #f5f7fb);
+        color: var(--text);
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      }
+
+      .wrap {
+        width: min(980px, 94vw);
+        margin: 0 auto;
+        padding: 26px 0 48px;
+      }
+
+      .topbar {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+      }
+
+      .brand {
+        text-decoration: none;
+        color: var(--text);
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .nav a {
+        text-decoration: none;
+        color: var(--muted);
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 14px;
+      }
+
+      .nav a:hover,
+      .nav a.active {
+        color: var(--text);
+        background: #edf4ff;
+        border-color: var(--line);
+      }
+
+      .panel {
+        margin-top: 14px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--surface);
+        padding: 18px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 30px;
+      }
+
+      .sub {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .controls {
+        margin-top: 12px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      select,
+      button {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: var(--surface);
+        color: var(--text);
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      button.primary {
+        background: var(--text);
+        color: #fff;
+        border-color: var(--text);
+      }
+
+      .stats {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #4d5f7a;
+      }
+
+      .status {
+        margin-top: 8px;
+        min-height: 22px;
+        font-size: 14px;
+        color: var(--ok);
+      }
+
+      .board {
+        margin-top: 12px;
+        border: 1px solid #ced9ec;
+        border-radius: 12px;
+        background: #f8fbff;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+
+      .peg {
+        border: 1px solid #d8e1f2;
+        border-radius: 10px;
+        background: #ffffff;
+        min-height: 260px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+        padding-bottom: 10px;
+        cursor: pointer;
+      }
+
+      .peg::before {
+        content: '';
+        position: absolute;
+        bottom: 10px;
+        width: 72%;
+        height: 8px;
+        border-radius: 999px;
+        background: #d7e1f3;
+      }
+
+      .peg::after {
+        content: '';
+        position: absolute;
+        bottom: 18px;
+        width: 8px;
+        height: 190px;
+        border-radius: 999px;
+        background: #c8d6ef;
+      }
+
+      .peg.selected {
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+      }
+
+      .disk {
+        height: 22px;
+        border-radius: 999px;
+        margin-top: 4px;
+        z-index: 1;
+        border: 1px solid #9fb4da;
+        background: linear-gradient(90deg, #d6e4fb, #b8cdf2);
+      }
+
+      .peg-title {
+        position: absolute;
+        top: 8px;
+        color: #60718c;
+        font-size: 13px;
+      }
+
+      .hint {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.7;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="topbar">
+        <a class="brand" href="/">Dezhonger</a>
+        <nav class="nav" aria-label="Game navigation">
+          <a href="/game/">Game Hub</a>
+          <a href="/game/sudoku/">Sudoku</a>
+          <a href="/game/24/">24 Game</a>
+          <a href="/game/2048/">2048</a>
+          <a href="/game/minesweeper/">Minesweeper</a>
+          <a href="/game/snake/">Snake</a>
+          <a href="/game/hanoi/" class="active">Hanoi</a>
+          <a href="/game/tetris/">Tetris</a>
+        </nav>
+      </header>
+
+      <section class="panel">
+        <h1>Tower of Hanoi</h1>
+        <p class="sub">Move all disks from peg A to peg C. You can only move one disk at a time and cannot place a larger disk on a smaller one.</p>
+
+        <div class="controls">
+          <label>
+            Disks
+            <select id="disk-count">
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+            </select>
+          </label>
+          <button id="reset" class="primary">Reset</button>
+          <button id="demo">Auto Demo</button>
+          <button id="instant">Instant Solve</button>
+        </div>
+
+        <div class="stats">Moves: <span id="moves">0</span> | Minimum: <span id="minimum">0</span></div>
+        <div id="status" class="status"></div>
+
+        <div id="board" class="board">
+          <div class="peg" data-peg="0"><div class="peg-title">A</div></div>
+          <div class="peg" data-peg="1"><div class="peg-title">B</div></div>
+          <div class="peg" data-peg="2"><div class="peg-title">C</div></div>
+        </div>
+
+        <div class="hint">Click one peg to pick the top disk, then click another peg to place it.</div>
+      </section>
+    </main>
+
+    <script>
+      (() => {
+        const pegsEl = Array.from(document.querySelectorAll('.peg'));
+        const movesEl = document.getElementById('moves');
+        const minEl = document.getElementById('minimum');
+        const statusEl = document.getElementById('status');
+        const diskCountEl = document.getElementById('disk-count');
+
+        let pegData = [[], [], []];
+        let selectedPeg = null;
+        let moves = 0;
+        let diskCount = 4;
+        let demoTimer = null;
+
+        function setStatus(msg) {
+          statusEl.textContent = msg;
+        }
+
+        function minimumMoves(n) {
+          return Math.pow(2, n) - 1;
+        }
+
+        function resetGame() {
+          stopDemo();
+          diskCount = Number(diskCountEl.value);
+          pegData = [[], [], []];
+          for (let d = diskCount; d >= 1; d--) {
+            pegData[0].push(d);
+          }
+          selectedPeg = null;
+          moves = 0;
+          movesEl.textContent = '0';
+          minEl.textContent = String(minimumMoves(diskCount));
+          setStatus('');
+          render();
+        }
+
+        function stopDemo() {
+          if (demoTimer) {
+            clearInterval(demoTimer);
+            demoTimer = null;
+          }
+        }
+
+        function generateSolutionMoves(n, from, to, aux, out) {
+          if (n === 0) return;
+          generateSolutionMoves(n - 1, from, aux, to, out);
+          out.push([from, to]);
+          generateSolutionMoves(n - 1, aux, to, from, out);
+        }
+
+        function render() {
+          pegsEl.forEach((pegEl, idx) => {
+            pegEl.classList.toggle('selected', selectedPeg === idx);
+            pegEl.querySelectorAll('.disk').forEach(d => d.remove());
+
+            pegData[idx].forEach(disk => {
+              const diskEl = document.createElement('div');
+              diskEl.className = 'disk';
+              const minW = 54;
+              const maxW = 170;
+              const width = minW + (disk - 1) * ((maxW - minW) / Math.max(1, diskCount - 1));
+              diskEl.style.width = width + 'px';
+              pegEl.appendChild(diskEl);
+            });
+          });
+        }
+
+        function topDisk(pegIndex) {
+          const p = pegData[pegIndex];
+          return p.length ? p[p.length - 1] : null;
+        }
+
+        function moveDisk(from, to) {
+          const srcTop = topDisk(from);
+          if (srcTop === null) return false;
+          const dstTop = topDisk(to);
+          if (dstTop !== null && dstTop < srcTop) return false;
+
+          pegData[from].pop();
+          pegData[to].push(srcTop);
+          moves++;
+          movesEl.textContent = String(moves);
+
+          if (pegData[2].length === diskCount) {
+            const perfect = moves === minimumMoves(diskCount);
+            if (perfect) {
+              setStatus('Solved perfectly in minimum moves.');
+            } else {
+              setStatus('Solved in ' + moves + ' moves. Minimum is ' + minimumMoves(diskCount) + '.');
+            }
+          }
+
+          return true;
+        }
+
+        function handlePegClick(idx) {
+          if (demoTimer) return;
+          if (selectedPeg === null) {
+            if (topDisk(idx) === null) return;
+            selectedPeg = idx;
+            render();
+            return;
+          }
+
+          if (selectedPeg === idx) {
+            selectedPeg = null;
+            render();
+            return;
+          }
+
+          const ok = moveDisk(selectedPeg, idx);
+          selectedPeg = null;
+          render();
+          if (!ok) setStatus('Illegal move: cannot place larger disk on smaller disk.');
+        }
+
+        function autoDemo() {
+          resetGame();
+          const steps = [];
+          generateSolutionMoves(diskCount, 0, 2, 1, steps);
+          let i = 0;
+          setStatus('Auto demo running...');
+          demoTimer = setInterval(() => {
+            const step = steps[i++];
+            moveDisk(step[0], step[1]);
+            render();
+            if (i >= steps.length) {
+              stopDemo();
+              setStatus('Auto demo finished in minimum moves.');
+            }
+          }, 220);
+        }
+
+        function instantSolve() {
+          resetGame();
+          const steps = [];
+          generateSolutionMoves(diskCount, 0, 2, 1, steps);
+          steps.forEach(step => moveDisk(step[0], step[1]));
+          render();
+          setStatus('Solved instantly in minimum moves: ' + minimumMoves(diskCount) + '.');
+        }
+
+        pegsEl.forEach((pegEl, idx) => {
+          pegEl.addEventListener('click', () => handlePegClick(idx));
+        });
+
+        document.getElementById('reset').addEventListener('click', resetGame);
+        document.getElementById('demo').addEventListener('click', autoDemo);
+        document.getElementById('instant').addEventListener('click', instantSolve);
+        diskCountEl.addEventListener('change', resetGame);
+
+        resetGame();
+      })();
+    </script>
+  </body>
+</html>
