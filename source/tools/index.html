@@ -9,8 +9,8 @@ comments: false
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>工具集合 | Dezhonger</title>
-    <meta name="description" content="博客工具集合页，包含注释去除器与文本对比工具。">
-    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260602d">
+    <meta name="description" content="博客工具集合页，包含精确数学计算、注释去除器与文本对比工具。">
+    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260810a">
   </head>
   <body class="tool-body">
     <main class="tool-shell">
@@ -31,33 +31,69 @@ comments: false
           <p class="tool-eyebrow">Utility Hub</p>
           <h1>Tools</h1>
           <p>
-            这里收纳博客里可直接使用的小工具。你可以先用注释去除器处理代码，再一键跳转到 Diff 页面对比处理前后差异。
+            这里收纳博客里可直接使用的小工具。数学工具坚持精确计算与公式化展示；代码工具则提供注释清理和文本差异对比。
           </p>
         </div>
         <div class="hero-actions">
-          <a class="tool-link-btn primary" href="/code-comment-remover/">打开注释去除器</a>
-          <a class="tool-link-btn secondary" href="/diff/">打开文本对比</a>
+          <a class="tool-link-btn primary" href="/tools/number-theory/">打开数学工具</a>
+          <a class="tool-link-btn secondary" href="/code-comment-remover/">打开代码工具</a>
         </div>
       </section>
 
       <section class="tool-panel">
         <div class="panel-head">
           <h2>可用工具</h2>
-          <div class="panel-note">工具间支持联动：去注释后可把处理前后文本自动带入 Diff 对比。</div>
+          <div class="panel-note">按用途分类；所有计算均在浏览器本地完成。</div>
         </div>
 
-        <div class="intro-grid">
-          <article class="intro-card">
-            <h3>代码注释去除器</h3>
-            <p>支持多语言注释清理、空白处理、复制结果与自动跳转 Diff 预览。</p>
-            <p style="margin-top: 12px;"><a class="tool-link-btn primary" href="/code-comment-remover/">进入工具</a></p>
-          </article>
-          <article class="intro-card">
-            <h3>文本对比工具</h3>
-            <p>基于 Monaco Diff Editor，左右两侧可编辑，支持差异高亮与复制右侧文本。</p>
-            <p style="margin-top: 12px;"><a class="tool-link-btn primary" href="/diff/">进入工具</a></p>
-          </article>
-        </div>
+        <section class="tool-category" aria-labelledby="math-tools-heading">
+          <div class="category-heading">
+            <div>
+              <span class="tool-badge">精确数学</span>
+              <h3 id="math-tools-heading">数学工具</h3>
+            </div>
+            <p>整数使用 BigInt，有理数自动约分；根式、特征多项式与分解结果以 LaTeX 公式展示，不用浮点近似替代精确答案。</p>
+          </div>
+          <div class="intro-grid">
+            <article class="intro-card">
+              <h3>数论计算</h3>
+              <p>质数判定、至少 10<sup>100</sup> 输入范围的质因数分解、精确 π(x)、广义中国剩余定理、GCD 与模逆元。</p>
+              <p style="margin-top: 12px;"><a class="tool-link-btn primary" href="/tools/number-theory/">进入工具</a></p>
+            </article>
+            <article class="intro-card">
+              <h3>方程求解</h3>
+              <p>支持有理数系数的二次、三次与四次方程，输出精确根式、因式分解、Cardano 或 Ferrari 形式。</p>
+              <p style="margin-top: 12px;"><a class="tool-link-btn primary" href="/tools/equation/">进入工具</a></p>
+            </article>
+            <article class="intro-card">
+              <h3>矩阵实验室</h3>
+              <p>精确计算行列式、秩、迹、RREF、逆矩阵、空间基、特征信息以及 PLU/LDU/LDLᵀ/QR/SVD。</p>
+              <p style="margin-top: 12px;"><a class="tool-link-btn primary" href="/tools/matrix/">进入工具</a></p>
+            </article>
+          </div>
+        </section>
+
+        <section class="tool-category" aria-labelledby="code-tools-heading">
+          <div class="category-heading">
+            <div>
+              <span class="tool-badge">开发辅助</span>
+              <h3 id="code-tools-heading">代码与文本工具</h3>
+            </div>
+            <p>注释去除器与 Diff 页面支持联动：处理代码后可以把原文和结果直接带入差异编辑器。</p>
+          </div>
+          <div class="intro-grid">
+            <article class="intro-card">
+              <h3>代码注释去除器</h3>
+              <p>支持多语言注释清理、空白处理、复制结果与自动跳转 Diff 预览。</p>
+              <p style="margin-top: 12px;"><a class="tool-link-btn primary" href="/code-comment-remover/">进入工具</a></p>
+            </article>
+            <article class="intro-card">
+              <h3>文本对比工具</h3>
+              <p>基于 Monaco Diff Editor，左右两侧可编辑，支持差异高亮与复制右侧文本。</p>
+              <p style="margin-top: 12px;"><a class="tool-link-btn primary" href="/diff/">进入工具</a></p>
+            </article>
+          </div>
+        </section>
       </section>
     </main>
   </body>

@@ -1,0 +1,100 @@
+---
+layout: false
+comments: false
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精确数论计算 | Dezhonger Tools</title>
+    <meta name="description" content="质数判定、整数质因数分解、素数计数 π(x)、广义中国剩余定理、GCD、Bézout 等式与模逆元。">
+    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260810a">
+    <link rel="stylesheet" href="/assets/tools/math-tools.css?v=20260810a">
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+        options: { processHtmlClass: 'mathjax-process', ignoreHtmlClass: 'tex2jax_ignore' }
+      }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js" integrity="sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY=" crossorigin="anonymous"></script>
+    <script defer src="/assets/tools/exact-math-core.js?v=20260810a"></script>
+    <script defer src="/assets/tools/number-theory.js?v=20260810a"></script>
+  </head>
+  <body class="tool-body math-page">
+    <main class="tool-shell">
+      <header class="tool-topbar">
+        <a class="tool-brand" href="/">Dezhonger</a>
+        <nav class="tool-nav" aria-label="Primary navigation">
+          <a href="/blog/">Blog</a><a href="/game/">Game</a><a href="/about/">About</a>
+          <a href="/tools/" class="active">Tools</a><a href="/tags/">Tags</a><a href="/archives/">Archives</a>
+        </nav>
+      </header>
+
+      <section class="tool-hero">
+        <div>
+          <p class="tool-eyebrow">Exact Mathematics · Number Theory</p>
+          <h1>精确数论计算</h1>
+          <p>整数不经过浮点数转换。质因数分解可接收至少 10<sup>100</sup> 的输入；素数计数和非互质模数下的中国剩余定理都给出精确整数结果。</p>
+        </div>
+        <div class="hero-actions">
+          <a class="tool-link-btn primary" href="/tools/equation/">方程求解</a>
+          <a class="tool-link-btn secondary" href="/tools/">返回 Tools</a>
+        </div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="panel-head"><h2>质数判定与质因数分解</h2><div class="panel-note">BigInt + Miller–Rabin + Pollard–Brent</div></div>
+        <div class="math-form">
+          <label class="math-field-block"><span>整数 n（最多 140 位）</span><input id="nt-integer" class="math-input" value="10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" inputmode="numeric" autocomplete="off"></label>
+          <div class="math-actions">
+            <button id="prime-check-btn" class="tool-btn primary" type="button">判定是否为质数</button>
+            <button id="factor-btn" class="tool-btn secondary" type="button">质因数分解</button>
+          </div>
+          <div id="nt-status" class="math-status" aria-live="polite" hidden></div>
+        </div>
+        <div class="precision-note"><strong>严格性边界：</strong>小于 2<sup>64</sup> 的素性判定是确定性的；更大的“可能质数”会明确标注为概率结果。分解等式及已找到因子的乘积始终是精确整数等式，困难的百位半素数可能在浏览器时间预算内只得到部分分解。</div>
+        <div id="nt-output" class="math-output-grid"></div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="panel-head"><h2>素数计数 π(x)</h2><div class="panel-note">精确 Lehmer prime counting</div></div>
+        <div class="math-form">
+          <label class="math-field-block"><span>x（0 ≤ x ≤ 10<sup>13</sup>）</span><input id="pi-input" class="math-input" value="1000000000000" inputmode="numeric" autocomplete="off"></label>
+          <div class="math-actions"><button id="pi-btn" class="tool-btn primary" type="button">计算 π(x)</button></div>
+          <div id="pi-status" class="math-status" aria-live="polite" hidden></div>
+        </div>
+        <div id="pi-output" class="math-output-grid"></div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="panel-head"><h2>Euclid 工具箱</h2><div class="panel-note">GCD、LCM、Bézout、模逆元</div></div>
+        <div class="math-field-grid">
+          <label class="math-field-block"><span>整数 a</span><input id="euclid-a" class="math-input" value="240" autocomplete="off"></label>
+          <label class="math-field-block"><span>整数 b</span><input id="euclid-b" class="math-input" value="46" autocomplete="off"></label>
+          <label class="math-field-block"><span>模数 m（可留空）</span><input id="euclid-modulus" class="math-input" value="101" autocomplete="off"></label>
+        </div>
+        <div class="math-actions" style="margin-top: 14px;"><button id="euclid-btn" class="tool-btn primary" type="button">精确计算</button></div>
+        <div id="euclid-status" class="math-status" aria-live="polite" hidden></div>
+        <div id="euclid-output" class="math-output-grid"></div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="panel-head"><h2>广义中国剩余定理</h2><div class="panel-note">模数不要求两两互质</div></div>
+        <div class="math-form">
+          <label class="math-field-block">
+            <span>每行一个同余式：余数 mod 模数</span>
+            <textarea id="crt-input" class="matrix-input congruence-input" spellcheck="false">2 mod 6
+5 mod 9
+14 mod 15</textarea>
+          </label>
+          <div class="math-actions"><button id="crt-btn" class="tool-btn primary" type="button">合并同余方程组</button></div>
+          <div id="crt-status" class="math-status" aria-live="polite" hidden></div>
+        </div>
+        <div class="precision-note"><strong>可解条件：</strong>合并 x ≡ a (mod m) 与 x ≡ b (mod n) 时，只要求 gcd(m,n) 整除 b−a。若条件不满足，页面会指出发生冲突的合并步骤。</div>
+        <div id="crt-output" class="math-output-grid"></div>
+      </section>
+    </main>
+  </body>
+</html>

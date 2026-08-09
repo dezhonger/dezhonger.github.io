@@ -1,0 +1,88 @@
+---
+layout: false
+comments: false
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二次、三次与四次方程精确求解 | Dezhonger Tools</title>
+    <meta name="description" content="使用有理数、根式、Cardano 和 Ferrari 公式精确求解二次、三次与四次方程。">
+    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260810a">
+    <link rel="stylesheet" href="/assets/tools/math-tools.css?v=20260810a">
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+        options: { processHtmlClass: 'mathjax-process', ignoreHtmlClass: 'tex2jax_ignore' }
+      }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js" integrity="sha256-r+3itOMtGGjap0x+10hu6jW/gZCzxHsoKrOd7gyRSGY=" crossorigin="anonymous"></script>
+    <script defer src="/assets/tools/exact-math-core.js?v=20260810a"></script>
+    <script defer src="/assets/tools/equation-solver.js?v=20260810a"></script>
+  </head>
+  <body class="tool-body math-page">
+    <main class="tool-shell">
+      <header class="tool-topbar">
+        <a class="tool-brand" href="/">Dezhonger</a>
+        <nav class="tool-nav" aria-label="Primary navigation">
+          <a href="/blog/">Blog</a><a href="/game/">Game</a><a href="/about/">About</a>
+          <a href="/tools/" class="active">Tools</a><a href="/tags/">Tags</a><a href="/archives/">Archives</a>
+        </nav>
+      </header>
+
+      <section class="tool-hero">
+        <div>
+          <p class="tool-eyebrow">Exact Mathematics · Equations</p>
+          <h1>二次 / 三次 / 四次方程求解</h1>
+          <p>系数支持整数、有限小数和 p/q 分数。输出优先使用有理根与因式分解，否则保留为精确根式、Cardano 或 Ferrari 形式。</p>
+        </div>
+        <div class="hero-actions">
+          <a class="tool-link-btn primary" href="/tools/matrix/">矩阵实验室</a>
+          <a class="tool-link-btn secondary" href="/tools/">返回 Tools</a>
+        </div>
+      </section>
+
+      <section class="tool-panel">
+        <div class="panel-head"><h2>方程系数</h2><div class="panel-note">例如 0.125 会被精确解析为 1/8</div></div>
+        <div class="math-form">
+          <div class="math-mode-switch" role="radiogroup" aria-label="方程次数">
+            <label><input type="radio" name="equation-degree" value="2" checked><span>二次方程</span></label>
+            <label><input type="radio" name="equation-degree" value="3"><span>三次方程</span></label>
+            <label><input type="radio" name="equation-degree" value="4"><span>四次方程</span></label>
+          </div>
+
+          <div id="quadratic-fields" class="math-field-grid">
+            <label class="math-field-block"><span>a · x²</span><input id="q-0" class="math-input" value="1" autocomplete="off"></label>
+            <label class="math-field-block"><span>b · x</span><input id="q-1" class="math-input" value="-3" autocomplete="off"></label>
+            <label class="math-field-block"><span>c</span><input id="q-2" class="math-input" value="1" autocomplete="off"></label>
+          </div>
+
+          <div id="cubic-fields" class="math-field-grid four-columns" hidden>
+            <label class="math-field-block"><span>a · x³</span><input id="c-0" class="math-input" value="1" autocomplete="off"></label>
+            <label class="math-field-block"><span>b · x²</span><input id="c-1" class="math-input" value="-6" autocomplete="off"></label>
+            <label class="math-field-block"><span>c · x</span><input id="c-2" class="math-input" value="11" autocomplete="off"></label>
+            <label class="math-field-block"><span>d</span><input id="c-3" class="math-input" value="-6" autocomplete="off"></label>
+          </div>
+
+          <div id="quartic-fields" class="math-field-grid five-columns" hidden>
+            <label class="math-field-block"><span>a · x⁴</span><input id="f-0" class="math-input" value="1" autocomplete="off"></label>
+            <label class="math-field-block"><span>b · x³</span><input id="f-1" class="math-input" value="0" autocomplete="off"></label>
+            <label class="math-field-block"><span>c · x²</span><input id="f-2" class="math-input" value="-10" autocomplete="off"></label>
+            <label class="math-field-block"><span>d · x</span><input id="f-3" class="math-input" value="0" autocomplete="off"></label>
+            <label class="math-field-block"><span>e</span><input id="f-4" class="math-input" value="9" autocomplete="off"></label>
+          </div>
+
+          <div class="math-actions">
+            <button id="equation-solve-btn" class="tool-btn primary" type="button">求精确解</button>
+            <button id="equation-example-btn" class="tool-btn secondary" type="button">填充示例</button>
+          </div>
+          <div id="equation-status" class="math-status" aria-live="polite" hidden></div>
+        </div>
+        <div class="precision-note"><strong>输出约定：</strong>二次方程保留平方根；三次、四次方程优先提取有理根，之后分别使用 Cardano 与 Ferrari 精确式。双二次方程会单独降次，页面不会用有限位小数替代代数数。</div>
+        <div id="equation-output" class="math-output-grid"></div>
+      </section>
+    </main>
+  </body>
+</html>
