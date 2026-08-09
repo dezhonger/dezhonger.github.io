@@ -9,7 +9,7 @@
       name="description"
       content="支持多语言注释去除、复制结果，并在复制后自动打开文本差异对比页面。"
     >
-    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260602f">
+    <link rel="stylesheet" href="/assets/tools/code-tools.css?v=20260809a">
   </head>
   <body class="tool-body">
     <main class="tool-shell">
@@ -94,12 +94,22 @@
         <div class="editor-grid">
           <section class="editor-card">
             <div class="editor-label">原始代码</div>
-            <div id="input-editor" class="monaco-host"></div>
+            <div
+              id="input-editor"
+              class="monaco-host is-loading"
+              data-loading-text="编辑器加载中…"
+              aria-busy="true"
+            ></div>
           </section>
 
           <section class="editor-card">
             <div class="editor-label">去掉注释后的代码</div>
-            <div id="output-editor" class="monaco-host"></div>
+            <div
+              id="output-editor"
+              class="monaco-host is-loading"
+              data-loading-text="编辑器加载中…"
+              aria-busy="true"
+            ></div>
           </section>
         </div>
 
@@ -110,7 +120,7 @@
     </main>
 
     <script src="/vendor/monaco/vs/loader.js"></script>
-    <script src="/assets/tools/code-comment-toolkit.js?v=20260602f"></script>
-    <script src="/assets/tools/code-comment-remover.js?v=20260602f"></script>
+    <script src="/assets/tools/code-comment-toolkit.js?v=20260809a"></script>
+    <script src="/assets/tools/code-comment-remover.js?v=20260809a"></script>
   </body>
 </html>
