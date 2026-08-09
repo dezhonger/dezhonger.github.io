@@ -289,6 +289,10 @@ body.tool-body {
   font-weight: 600;
 }
 
+.status-pill[hidden] {
+  display: none;
+}
+
 .status-pill.success {
   color: var(--tool-success);
   background: rgba(19, 138, 79, 0.1);
@@ -319,12 +323,46 @@ body.tool-body {
 }
 
 .monaco-host {
+  position: relative;
   flex: 1;
   min-height: 680px;
   border: 1px solid var(--tool-line-strong);
   border-radius: 16px;
   overflow: hidden;
   background: #fff;
+}
+
+.monaco-host .monaco-editor {
+  opacity: 1;
+  transition: opacity 0.14s ease;
+}
+
+.monaco-host.is-loading .monaco-editor {
+  opacity: 0;
+}
+
+.monaco-host.is-loading::before,
+.monaco-host.is-error::before {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  color: var(--tool-muted);
+  background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.monaco-host.is-loading::before {
+  content: attr(data-loading-text);
+}
+
+.monaco-host.is-error::before {
+  content: "编辑器加载失败，请刷新页面后重试";
+  color: var(--tool-danger);
+  background: #fff5f4;
 }
 
 .diff-host {
@@ -390,6 +428,12 @@ body.tool-body {
   .monaco-host,
   .diff-host {
     min-height: 520px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .monaco-host .monaco-editor {
+    transition: none;
   }
 }
 

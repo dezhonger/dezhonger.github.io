@@ -285,6 +285,16 @@
       theme: 'vs',
       readOnly: true,
     })
+
+    window.requestAnimationFrame(function () {
+      state.inputEditor.layout()
+      state.outputEditor.layout()
+      ;[refs.inputEditor, refs.outputEditor].forEach(function (host) {
+        host.classList.remove('is-loading', 'is-error')
+        host.classList.add('is-ready')
+        host.setAttribute('aria-busy', 'false')
+      })
+    })
   }
 
   function initMonaco() {
@@ -294,6 +304,11 @@
         initEditors(monaco)
       },
       function () {
+        ;[refs.inputEditor, refs.outputEditor].forEach(function (host) {
+          host.classList.remove('is-loading', 'is-ready')
+          host.classList.add('is-error')
+          host.setAttribute('aria-busy', 'false')
+        })
         setStatus('error', 'Monaco 加载失败，请刷新页面后重试')
       },
     )
