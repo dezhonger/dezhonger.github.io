@@ -2,6 +2,16 @@ custom_file_path:
   style: source/_data/styles.styl
   bodyEnd: source/_data/body-end.njk
 
+comments:
+  active: utterances
+  lazyload: true
+
+utterances:
+  enable: true
+  repo: dezhonger/dezhonger.github.io
+  issue_term: pathname
+  theme: github-light
+
 menu:
   home: / || fa fa-home
   blog: /blog/ || fa fa-book

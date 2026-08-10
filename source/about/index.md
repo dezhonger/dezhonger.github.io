@@ -2,6 +2,7 @@
 title: About
 date: 2021-03-13 15:21:30
 type: "about"
+comments: false
 categories: 
     - 个人生活
 tags:
