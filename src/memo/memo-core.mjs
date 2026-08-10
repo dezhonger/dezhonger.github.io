@@ -2,7 +2,10 @@ const MAX_TITLE_LENGTH = 200
 const MAX_CONTENT_LENGTH = 2_000_000
 const MAX_TAGS = 20
 const MAX_TAG_LENGTH = 32
+const MAX_CATEGORY_LENGTH = 50
 const MAX_IMPORT_NOTES = 500
+const NOTE_STATUSES = new Set(['inbox', 'todo', 'doing', 'done', 'archived'])
+const NOTE_STATUS_ORDER = ['inbox', 'todo', 'doing', 'done', 'archived']
 
 function asString(value) {
   return typeof value === 'string' ? value : ''
@@ -25,6 +28,15 @@ export function normalizeTags(value) {
   return tags
 }
 
+export function normalizeCategory(value) {
+  return asString(value).trim().slice(0, MAX_CATEGORY_LENGTH)
+}
+
+export function normalizeStatus(value) {
+  const status = asString(value)
+  return NOTE_STATUSES.has(status) ? status : 'inbox'
+}
+
 export function normalizeNote(input, userId = '') {
   const source = input && typeof input === 'object' ? input : {}
   const now = new Date().toISOString()
@@ -35,6 +47,9 @@ export function normalizeNote(input, userId = '') {
     title: asString(source.title).slice(0, MAX_TITLE_LENGTH),
     content: asString(source.content).slice(0, MAX_CONTENT_LENGTH),
     tags: normalizeTags(source.tags),
+    category: normalizeCategory(source.category),
+    status: normalizeStatus(source.status),
+    is_pinned: source.is_pinned === true,
     created_at: asString(source.created_at) || now,
     updated_at: asString(source.updated_at) || now,
   }
@@ -47,6 +62,9 @@ export function createBlankNote(userId, id, now = new Date().toISOString()) {
     title: '',
     content: '',
     tags: [],
+    category: '',
+    status: 'inbox',
+    is_pinned: false,
     created_at: now,
     updated_at: now,
   }
@@ -64,24 +82,59 @@ export function noteTitle(note) {
   return firstContentLine?.slice(0, 60) || '无标题备忘录'
 }
 
-export function sortNotes(notes) {
+export function sortNotes(notes, sortBy = 'updated_desc') {
   return [...notes].sort((left, right) => {
+    const byPinned = Number(Boolean(right.is_pinned)) - Number(Boolean(left.is_pinned))
+    if (byPinned !== 0) return byPinned
+
+    if (sortBy === 'created_desc') {
+      const byCreatedAt = Date.parse(right.created_at || '') - Date.parse(left.created_at || '')
+      if (Number.isFinite(byCreatedAt) && byCreatedAt !== 0) return byCreatedAt
+    } else if (sortBy === 'title_asc') {
+      const byTitle = noteTitle(left).localeCompare(noteTitle(right), 'zh-CN')
+      if (byTitle !== 0) return byTitle
+    } else if (sortBy === 'status') {
+      const byStatus =
+        NOTE_STATUS_ORDER.indexOf(normalizeStatus(left.status)) -
+        NOTE_STATUS_ORDER.indexOf(normalizeStatus(right.status))
+      if (byStatus !== 0) return byStatus
+    }
+
     const byUpdatedAt = Date.parse(right.updated_at || '') - Date.parse(left.updated_at || '')
     if (Number.isFinite(byUpdatedAt) && byUpdatedAt !== 0) return byUpdatedAt
     return noteTitle(left).localeCompare(noteTitle(right), 'zh-CN')
   })
 }
 
-export function filterNotes(notes, query) {
+export function filterNotes(notes, query, filters = {}) {
   const normalizedQuery = asString(query).trim().toLocaleLowerCase()
-  if (!normalizedQuery) return sortNotes(notes)
+  const selectedTag = asString(filters.tag).trim().toLocaleLowerCase()
+  const selectedCategory = normalizeCategory(filters.category).toLocaleLowerCase()
+  const selectedStatus = asString(filters.status)
 
-  return sortNotes(notes).filter((note) => {
-    const haystack = [note.title, note.content, ...(note.tags || [])]
+  const filtered = notes.filter((note) => {
+    if (
+      selectedTag &&
+      !normalizeTags(note.tags).some((tag) => tag.toLocaleLowerCase() === selectedTag)
+    ) {
+      return false
+    }
+    if (
+      selectedCategory &&
+      normalizeCategory(note.category).toLocaleLowerCase() !== selectedCategory
+    ) {
+      return false
+    }
+    if (selectedStatus && normalizeStatus(note.status) !== selectedStatus) return false
+    if (!normalizedQuery) return true
+
+    const haystack = [note.title, note.content, note.category, ...(note.tags || [])]
       .join('\n')
       .toLocaleLowerCase()
     return haystack.includes(normalizedQuery)
   })
+
+  return sortNotes(filtered, filters.sortBy)
 }
 
 export function noteToMutation(note) {
@@ -91,6 +144,9 @@ export function noteToMutation(note) {
     title: asString(note.title).slice(0, MAX_TITLE_LENGTH),
     content: asString(note.content).slice(0, MAX_CONTENT_LENGTH),
     tags: normalizeTags(note.tags),
+    category: normalizeCategory(note.category),
+    status: normalizeStatus(note.status),
+    is_pinned: note.is_pinned === true,
   }
 }
 
@@ -132,12 +188,15 @@ export function applyPendingOperations(notes, operations, userId) {
 export function createExportDocument(notes, exportedAt = new Date().toISOString()) {
   return {
     format: 'dezhonger-memo',
-    version: 1,
+    version: 2,
     exported_at: exportedAt,
     notes: sortNotes(notes).map((note) => ({
       title: asString(note.title),
       content: asString(note.content),
       tags: normalizeTags(note.tags),
+      category: normalizeCategory(note.category),
+      status: normalizeStatus(note.status),
+      is_pinned: note.is_pinned === true,
       created_at: asString(note.created_at),
       updated_at: asString(note.updated_at),
     })),
@@ -169,6 +228,9 @@ export function parseImportDocument(rawText) {
       title: asString(note.title).slice(0, MAX_TITLE_LENGTH),
       content: asString(note.content).slice(0, MAX_CONTENT_LENGTH),
       tags: normalizeTags(note.tags),
+      category: normalizeCategory(note.category),
+      status: normalizeStatus(note.status),
+      is_pinned: note.is_pinned === true,
       created_at: asString(note.created_at),
       updated_at: asString(note.updated_at),
     }

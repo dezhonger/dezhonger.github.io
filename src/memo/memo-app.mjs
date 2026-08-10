@@ -8,7 +8,9 @@ import {
   createBlankNote,
   createExportDocument,
   filterNotes,
+  normalizeCategory,
   normalizeNote,
+  normalizeStatus,
   normalizeTags,
   noteTitle,
   noteToMutation,
@@ -22,7 +24,14 @@ const RECORD_STORE = 'records'
 const STORAGE_PREFIX = 'dz-memo'
 const AUTOSAVE_DELAY_MS = 650
 const REMOTE_REFRESH_INTERVAL_MS = 15_000
-const NOTE_SELECT = 'id,user_id,title,content,tags,created_at,updated_at'
+const NOTE_SELECT = 'id,user_id,title,content,tags,category,status,is_pinned,created_at,updated_at'
+const STATUS_LABELS = Object.freeze({
+  inbox: '收件箱',
+  todo: '待处理',
+  doing: '进行中',
+  done: '已完成',
+  archived: '已归档',
+})
 
 const elements = {
   loadingView: document.querySelector('#loading-view'),
@@ -41,6 +50,10 @@ const elements = {
   syncStatus: document.querySelector('#sync-status'),
   syncNow: document.querySelector('#sync-now'),
   search: document.querySelector('#memo-search'),
+  categoryFilter: document.querySelector('#category-filter'),
+  statusFilter: document.querySelector('#status-filter'),
+  sortBy: document.querySelector('#sort-by'),
+  tagFilters: document.querySelector('#tag-filters'),
   noteCount: document.querySelector('#note-count'),
   noteList: document.querySelector('#note-list'),
   newNote: document.querySelector('#new-note'),
@@ -52,6 +65,9 @@ const elements = {
   editor: document.querySelector('#memo-editor'),
   title: document.querySelector('#note-title'),
   tags: document.querySelector('#note-tags'),
+  category: document.querySelector('#note-category'),
+  status: document.querySelector('#note-status'),
+  pinNote: document.querySelector('#pin-note'),
   content: document.querySelector('#note-content'),
   preview: document.querySelector('#note-preview'),
   editMode: document.querySelector('#edit-mode'),
@@ -70,7 +86,12 @@ const state = {
   pending: [],
   activeId: null,
   query: '',
+  selectedTag: '',
+  selectedCategory: '',
+  selectedStatus: '',
+  sortBy: 'updated_desc',
   mode: 'edit',
+  renderedNoteId: null,
   lastQueuedFingerprint: new Map(),
   autosaveTimer: null,
   flushInProgress: false,
@@ -258,7 +279,14 @@ function clearEmergencyDraft(noteId) {
 }
 
 function noteFingerprint(note) {
-  return JSON.stringify([note?.title || '', note?.content || '', normalizeTags(note?.tags)])
+  return JSON.stringify([
+    note?.title || '',
+    note?.content || '',
+    normalizeTags(note?.tags),
+    normalizeCategory(note?.category),
+    normalizeStatus(note?.status),
+    note?.is_pinned === true,
+  ])
 }
 
 function activeNote() {
@@ -312,9 +340,64 @@ function updateSyncStatus(message = '') {
   updateConnectionStatus()
 }
 
+function renderFilters() {
+  const categories = [
+    ...new Set(state.notes.map((note) => normalizeCategory(note.category)).filter(Boolean)),
+  ].sort((left, right) => left.localeCompare(right, 'zh-CN'))
+  if (state.selectedCategory && !categories.includes(state.selectedCategory)) {
+    state.selectedCategory = ''
+  }
+
+  const categoryOptions = [
+    { value: '', label: '全部分类' },
+    ...categories.map((category) => ({ value: category, label: category })),
+  ]
+  elements.categoryFilter.replaceChildren(
+    ...categoryOptions.map(({ value, label }) => {
+      const option = document.createElement('option')
+      option.value = value
+      option.textContent = label
+      option.selected = value === state.selectedCategory
+      return option
+    }),
+  )
+  elements.statusFilter.value = state.selectedStatus
+  elements.sortBy.value = state.sortBy
+
+  const tags = [...new Set(state.notes.flatMap((note) => normalizeTags(note.tags)))].sort(
+    (left, right) => left.localeCompare(right, 'zh-CN'),
+  )
+  if (state.selectedTag && !tags.includes(state.selectedTag)) state.selectedTag = ''
+
+  elements.tagFilters.replaceChildren()
+  if (!tags.length) {
+    elements.tagFilters.hidden = true
+    return
+  }
+
+  elements.tagFilters.hidden = false
+  for (const tag of ['', ...tags]) {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.className = 'memo-tag-filter'
+    button.dataset.tag = tag
+    button.textContent = tag || '全部标签'
+    button.setAttribute('aria-pressed', tag === state.selectedTag ? 'true' : 'false')
+    elements.tagFilters.append(button)
+  }
+}
+
 function renderNoteList() {
-  const visibleNotes = filterNotes(state.notes, state.query)
-  elements.noteCount.textContent = state.query
+  const visibleNotes = filterNotes(state.notes, state.query, {
+    tag: state.selectedTag,
+    category: state.selectedCategory,
+    status: state.selectedStatus,
+    sortBy: state.sortBy,
+  })
+  const filterActive = Boolean(
+    state.query || state.selectedTag || state.selectedCategory || state.selectedStatus,
+  )
+  elements.noteCount.textContent = filterActive
     ? `${visibleNotes.length}/${state.notes.length}`
     : `${state.notes.length}`
   elements.noteList.replaceChildren()
@@ -322,7 +405,7 @@ function renderNoteList() {
   if (visibleNotes.length === 0) {
     const empty = document.createElement('li')
     empty.className = 'memo-list-empty'
-    empty.textContent = state.query ? '没有匹配的备忘录' : '还没有备忘录'
+    empty.textContent = filterActive ? '没有匹配的备忘录' : '还没有备忘录'
     elements.noteList.append(empty)
     return
   }
@@ -333,6 +416,7 @@ function renderNoteList() {
     const button = document.createElement('button')
     const heading = document.createElement('span')
     const excerpt = document.createElement('span')
+    const tags = document.createElement('span')
     const meta = document.createElement('span')
 
     button.type = 'button'
@@ -341,15 +425,33 @@ function renderNoteList() {
     button.setAttribute('aria-current', note.id === state.activeId ? 'true' : 'false')
 
     heading.className = 'memo-list-title'
-    heading.textContent = noteTitle(note)
+    heading.textContent = `${note.is_pinned ? '置顶 · ' : ''}${noteTitle(note)}`
 
     excerpt.className = 'memo-list-excerpt'
     excerpt.textContent = note.content.replace(/\s+/g, ' ').trim() || '暂无正文'
 
-    meta.className = 'memo-list-meta'
-    meta.textContent = `${formatUpdatedAt(note.updated_at)}${pendingIds.has(note.id) ? ' · 待同步' : ''}`
+    tags.className = 'memo-list-tags'
+    for (const tag of note.tags.slice(0, 3)) {
+      const chip = document.createElement('span')
+      chip.textContent = tag
+      tags.append(chip)
+    }
+    if (note.tags.length > 3) {
+      const more = document.createElement('span')
+      more.textContent = `+${note.tags.length - 3}`
+      tags.append(more)
+    }
+    tags.hidden = note.tags.length === 0
 
-    button.append(heading, excerpt, meta)
+    meta.className = 'memo-list-meta'
+    meta.textContent = [
+      STATUS_LABELS[normalizeStatus(note.status)],
+      normalizeCategory(note.category) || '未分类',
+      formatUpdatedAt(note.updated_at),
+      pendingIds.has(note.id) ? '待同步' : '',
+    ].filter(Boolean).join(' · ')
+
+    button.append(heading, excerpt, tags, meta)
     item.append(button)
     elements.noteList.append(item)
   }
@@ -380,12 +482,27 @@ function renderEditor() {
   const note = activeNote()
   elements.editorEmpty.hidden = Boolean(note)
   elements.editor.hidden = !note
-  if (!note) return
+  if (!note) {
+    state.renderedNoteId = null
+    return
+  }
 
-  elements.title.value = note.title
-  elements.tags.value = note.tags.join(', ')
-  elements.content.value = note.content
+  const noteChanged = state.renderedNoteId !== note.id
+  for (const [input, value] of [
+    [elements.title, note.title],
+    [elements.tags, note.tags.join(', ')],
+    [elements.category, normalizeCategory(note.category)],
+    [elements.status, normalizeStatus(note.status)],
+    [elements.content, note.content],
+  ]) {
+    if (input.value === value) continue
+    if (!noteChanged && document.activeElement === input) continue
+    input.value = value
+  }
+  state.renderedNoteId = note.id
   elements.updatedAt.textContent = `更新于 ${formatUpdatedAt(note.updated_at)}`
+  elements.pinNote.textContent = note.is_pinned ? '取消置顶' : '置顶'
+  elements.pinNote.setAttribute('aria-pressed', note.is_pinned ? 'true' : 'false')
   elements.editMode.setAttribute('aria-pressed', state.mode === 'edit' ? 'true' : 'false')
   elements.previewMode.setAttribute('aria-pressed', state.mode === 'preview' ? 'true' : 'false')
   elements.content.hidden = state.mode !== 'edit'
@@ -398,6 +515,7 @@ function renderAll() {
     state.activeId = state.notes[0]?.id || null
   }
   if (!state.activeId && state.notes.length) state.activeId = state.notes[0].id
+  renderFilters()
   renderNoteList()
   renderEditor()
   updateSyncStatus()
@@ -412,6 +530,8 @@ function captureEditorChanges() {
     title: elements.title.value.slice(0, 200),
     content: elements.content.value.slice(0, 2_000_000),
     tags: normalizeTags(elements.tags.value),
+    category: normalizeCategory(elements.category.value),
+    status: normalizeStatus(elements.status.value),
   }
   if (noteFingerprint(candidate) === noteFingerprint(note)) return note
 
@@ -484,6 +604,7 @@ async function saveActiveNote({ flush = true } = {}) {
 function scheduleAutosave() {
   const note = captureEditorChanges()
   if (!note) return
+  renderFilters()
   renderNoteList()
   if (state.mode === 'preview') renderPreview()
   updateSyncStatus('等待自动保存…')
@@ -663,6 +784,10 @@ async function activateSession(session) {
   state.notes = []
   state.pending = []
   state.activeId = null
+  state.renderedNoteId = null
+  state.selectedTag = ''
+  state.selectedCategory = ''
+  state.selectedStatus = ''
   state.lastQueuedFingerprint.clear()
 
   if (!state.user) {
@@ -687,6 +812,9 @@ async function createNewNote() {
   replaceNote(note)
   state.activeId = note.id
   state.query = ''
+  state.selectedTag = ''
+  state.selectedCategory = ''
+  state.selectedStatus = ''
   elements.search.value = ''
   await queueUpsert(note)
   renderAll()
@@ -714,6 +842,24 @@ async function deleteActiveNote() {
   await queueDelete(note.id)
   renderAll()
   showToast('备忘录已删除。')
+  flushPendingOperations().catch(console.error)
+}
+
+async function togglePin() {
+  await saveActiveNote({ flush: false })
+  const note = activeNote()
+  if (!note) return
+
+  const nextNote = {
+    ...note,
+    is_pinned: !note.is_pinned,
+    updated_at: new Date().toISOString(),
+  }
+  replaceNote(nextNote)
+  persistEmergencyDraft(nextNote)
+  await queueUpsert(nextNote)
+  renderAll()
+  showToast(nextNote.is_pinned ? '已置顶。' : '已取消置顶。', 'success')
   flushPendingOperations().catch(console.error)
 }
 
@@ -770,6 +916,9 @@ async function importNotes(file) {
 
   state.activeId = sortNotes(state.notes)[0]?.id || null
   state.query = ''
+  state.selectedTag = ''
+  state.selectedCategory = ''
+  state.selectedStatus = ''
   elements.search.value = ''
   await Promise.all([persistCache(), persistPendingQueue()])
   renderAll()
@@ -898,6 +1047,7 @@ function bindEvents() {
   elements.newNote.addEventListener('click', () => createNewNote().catch(console.error))
   elements.emptyNewNote.addEventListener('click', () => createNewNote().catch(console.error))
   elements.deleteNote.addEventListener('click', () => deleteActiveNote().catch(console.error))
+  elements.pinNote.addEventListener('click', () => togglePin().catch(console.error))
   elements.exportNotes.addEventListener('click', exportNotes)
   elements.importNotes.addEventListener('click', () => elements.importFile.click())
   elements.importFile.addEventListener('change', () => {
@@ -915,11 +1065,36 @@ function bindEvents() {
     state.query = elements.search.value
     renderNoteList()
   })
+  elements.categoryFilter.addEventListener('change', () => {
+    state.selectedCategory = elements.categoryFilter.value
+    renderNoteList()
+  })
+  elements.statusFilter.addEventListener('change', () => {
+    state.selectedStatus = elements.statusFilter.value
+    renderNoteList()
+  })
+  elements.sortBy.addEventListener('change', () => {
+    state.sortBy = elements.sortBy.value
+    renderNoteList()
+  })
+  elements.tagFilters.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-tag]')
+    if (!button) return
+    state.selectedTag = button.dataset.tag
+    renderFilters()
+    renderNoteList()
+  })
   elements.noteList.addEventListener('click', (event) => {
     const button = event.target.closest('[data-note-id]')
     if (button) selectNote(button.dataset.noteId).catch(console.error)
   })
-  for (const input of [elements.title, elements.tags, elements.content]) {
+  for (const input of [
+    elements.title,
+    elements.tags,
+    elements.category,
+    elements.status,
+    elements.content,
+  ]) {
     input.addEventListener('input', scheduleAutosave)
   }
   elements.editMode.addEventListener('click', () => switchMode('edit'))

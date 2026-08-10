@@ -16,8 +16,8 @@ comments: false
       content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'"
     >
     <title>Memo | Dezhonger</title>
-    <link rel="stylesheet" href="/assets/memo/memo.css?v=20260810b">
-    <script src="/assets/memo/memo-config.js?v=20260810b"></script>
+    <link rel="stylesheet" href="/assets/memo/memo.css?v=20260810c">
+    <script src="/assets/memo/memo-config.js?v=20260810c"></script>
   </head>
   <body>
     <main class="memo-shell">
@@ -111,6 +111,36 @@ comments: false
             <input id="memo-search" type="search" placeholder="搜索标题、正文或标签">
           </label>
 
+          <div class="memo-filter-grid">
+            <label>
+              <span class="sr-only">按分类筛选</span>
+              <select id="category-filter" aria-label="按分类筛选">
+                <option value="">全部分类</option>
+              </select>
+            </label>
+            <label>
+              <span class="sr-only">按状态筛选</span>
+              <select id="status-filter" aria-label="按状态筛选">
+                <option value="">全部状态</option>
+                <option value="inbox">收件箱</option>
+                <option value="todo">待处理</option>
+                <option value="doing">进行中</option>
+                <option value="done">已完成</option>
+                <option value="archived">已归档</option>
+              </select>
+            </label>
+            <label class="memo-sort-filter">
+              <span class="sr-only">排序方式</span>
+              <select id="sort-by" aria-label="排序方式">
+                <option value="updated_desc">最近更新</option>
+                <option value="created_desc">最近创建</option>
+                <option value="title_asc">标题排序</option>
+                <option value="status">状态排序</option>
+              </select>
+            </label>
+          </div>
+          <div id="tag-filters" class="memo-tag-filters" aria-label="按标签筛选" hidden></div>
+
           <ul id="note-list" class="memo-list"></ul>
 
           <div class="memo-sidebar-foot">
@@ -145,6 +175,22 @@ comments: false
                 <input id="note-title" class="memo-title-input" type="text" maxlength="200" placeholder="无标题备忘录">
                 <label for="note-tags" class="sr-only">标签</label>
                 <input id="note-tags" class="memo-tags-input" type="text" placeholder="标签，用逗号分隔">
+                <div class="memo-editor-meta-fields">
+                  <label>
+                    <span>分类</span>
+                    <input id="note-category" type="text" maxlength="50" placeholder="例如：工作">
+                  </label>
+                  <label>
+                    <span>状态</span>
+                    <select id="note-status">
+                      <option value="inbox">收件箱</option>
+                      <option value="todo">待处理</option>
+                      <option value="doing">进行中</option>
+                      <option value="done">已完成</option>
+                      <option value="archived">已归档</option>
+                    </select>
+                  </label>
+                </div>
                 <span id="note-updated-at" class="memo-updated-at"></span>
               </div>
               <div class="memo-editor-actions">
@@ -152,6 +198,7 @@ comments: false
                   <button id="edit-mode" type="button" aria-pressed="true">编辑</button>
                   <button id="preview-mode" type="button" aria-pressed="false">预览</button>
                 </div>
+                <button id="pin-note" class="memo-button ghost compact" type="button" aria-pressed="false">置顶</button>
                 <button id="delete-note" class="memo-button danger compact" type="button">删除</button>
               </div>
             </header>
@@ -171,6 +218,6 @@ comments: false
     </main>
 
     <div id="memo-toast" class="memo-toast" role="status" aria-live="polite" hidden></div>
-    <script type="module" src="/assets/memo/memo-app.js?v=20260810b"></script>
+    <script type="module" src="/assets/memo/memo-app.js?v=20260810c"></script>
   </body>
 </html>

@@ -36,6 +36,7 @@ flowchart LR
 
 ```text
 supabase/migrations/202608100001_create_notes.sql
+supabase/migrations/202608100002_add_note_organization.sql
 ```
 
 迁移会完成以下操作：
@@ -47,6 +48,7 @@ supabase/migrations/202608100001_create_notes.sql
 - 分别创建查询、新增、修改和删除策略；
 - 拒绝未登录的 `anon` 角色访问；
 - 允许 `authenticated` 角色操作自己的备忘录。
+- 增加分类、状态、置顶字段及对应索引。
 
 迁移执行后，应在 Table Editor 中确认 `notes` 表的 RLS 状态为启用。
 
@@ -137,6 +139,8 @@ http://localhost:4000/memo/
 - 未登录用户无法查询 `notes` 表。
 - 未预先创建的邮箱无法注册或登录。
 - 登录后可以创建、修改、删除和搜索备忘录。
+- 可以按标签、分类和状态筛选，并按更新时间、创建时间、标题或状态排序。
+- 置顶备忘录始终显示在普通备忘录之前。
 - 同一账号在两个浏览器登录后可以读取相同数据。
 - 断网编辑时页面显示待同步数量，恢复联网后自动完成同步。
 - Markdown 预览不会执行正文中的脚本。

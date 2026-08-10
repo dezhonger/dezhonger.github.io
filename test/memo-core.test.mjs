@@ -6,8 +6,11 @@ import {
   coalescePendingOperations,
   createExportDocument,
   filterNotes,
+  normalizeCategory,
+  normalizeStatus,
   normalizeTags,
   parseImportDocument,
+  sortNotes,
 } from '../src/memo/memo-core.mjs'
 
 test('normalizeTags trims, deduplicates, and supports Chinese commas', () => {
@@ -22,6 +25,45 @@ test('filterNotes searches title, content, and tags', () => {
 
   assert.deepEqual(filterNotes(notes, '工程').map((note) => note.id), ['2'])
   assert.deepEqual(filterNotes(notes, 'supabase').map((note) => note.id), ['2'])
+})
+
+test('normalizes category and status values', () => {
+  assert.equal(normalizeCategory('  工作  '), '工作')
+  assert.equal(normalizeStatus('doing'), 'doing')
+  assert.equal(normalizeStatus('unknown'), 'inbox')
+})
+
+test('filters organization fields and keeps pinned notes first', () => {
+  const notes = [
+    {
+      id: '1',
+      title: '普通任务',
+      content: '',
+      tags: ['工作'],
+      category: '项目',
+      status: 'todo',
+      is_pinned: false,
+      created_at: '2026-08-10T10:00:00Z',
+      updated_at: '2026-08-10T12:00:00Z',
+    },
+    {
+      id: '2',
+      title: '置顶任务',
+      content: '',
+      tags: ['重要'],
+      category: '项目',
+      status: 'doing',
+      is_pinned: true,
+      created_at: '2026-08-10T09:00:00Z',
+      updated_at: '2026-08-10T11:00:00Z',
+    },
+  ]
+
+  assert.deepEqual(
+    filterNotes(notes, '', { category: '项目', status: 'doing' }).map((note) => note.id),
+    ['2'],
+  )
+  assert.deepEqual(sortNotes(notes, 'updated_desc').map((note) => note.id), ['2', '1'])
 })
 
 test('coalescePendingOperations keeps only the latest operation per note', () => {
@@ -88,6 +130,9 @@ test('exports and imports the stable public format', () => {
       title: '测试',
       content: '# 内容',
       tags: ['标签'],
+      category: '工作',
+      status: 'doing',
+      is_pinned: true,
       created_at: '2026-08-10T10:00:00Z',
       updated_at: '2026-08-10T11:00:00Z',
     },
@@ -95,10 +140,14 @@ test('exports and imports the stable public format', () => {
   const notes = parseImportDocument(JSON.stringify(document))
 
   assert.equal(document.format, 'dezhonger-memo')
+  assert.equal(document.version, 2)
   assert.deepEqual(notes[0], {
     title: '测试',
     content: '# 内容',
     tags: ['标签'],
+    category: '工作',
+    status: 'doing',
+    is_pinned: true,
     created_at: '2026-08-10T10:00:00Z',
     updated_at: '2026-08-10T11:00:00Z',
   })
