@@ -1,0 +1,165 @@
+---
+layout: false
+comments: false
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dezhonger 的私有跨浏览器 Markdown 备忘录。">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="referrer" content="no-referrer">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'"
+    >
+    <title>Memo | Dezhonger</title>
+    <link rel="stylesheet" href="/assets/memo/memo.css?v=20260810a">
+    <script src="/assets/memo/memo-config.js?v=20260810a"></script>
+  </head>
+  <body>
+    <main class="memo-shell">
+      <header class="memo-topbar">
+        <div class="memo-brand-group">
+          <a class="memo-brand" href="/">Dezhonger</a>
+          <span class="memo-product-name">Memo</span>
+        </div>
+        <div class="memo-topbar-actions">
+          <span id="online-status" class="memo-status-dot" data-online="true">在线</span>
+          <span id="account-email" class="memo-account-email" hidden></span>
+          <button id="sign-out" class="memo-button ghost compact" type="button" hidden>退出</button>
+        </div>
+      </header>
+
+      <section id="loading-view" class="memo-gate" aria-live="polite">
+        <div class="memo-gate-card">
+          <div class="memo-loader" aria-hidden="true"></div>
+          <h1>正在打开备忘录</h1>
+          <p>正在恢复登录状态和本地缓存。</p>
+        </div>
+      </section>
+
+      <section id="setup-view" class="memo-gate" hidden>
+        <div class="memo-gate-card setup-card">
+          <p class="memo-eyebrow">Configuration required</p>
+          <h1>备忘录等待连接 Supabase</h1>
+          <p>
+            页面代码已经就绪，但还没有配置数据库地址和 publishable key。完成配置前不会创建本地正式数据。
+          </p>
+          <ol class="memo-setup-list">
+            <li>在 Supabase 中执行仓库提供的数据库迁移。</li>
+            <li>配置站点回调地址，并预先创建允许登录的用户。</li>
+            <li>填写 <code>memo-config.js</code> 中的公开连接信息。</li>
+          </ol>
+          <a
+            class="memo-button primary"
+            href="https://github.com/dezhonger/dezhonger.github.io/blob/hexo/docs/memo-supabase-setup.md"
+          >查看配置说明</a>
+        </div>
+      </section>
+
+      <section id="auth-view" class="memo-gate" hidden>
+        <div class="memo-gate-card auth-card">
+          <p class="memo-eyebrow">Private workspace</p>
+          <h1>登录备忘录</h1>
+          <p>使用已授权邮箱接收一次性登录链接。在需要使用备忘录的浏览器中打开邮件链接，即可登录并同步。</p>
+
+          <form id="auth-form" class="memo-auth-form">
+            <label for="auth-email">邮箱</label>
+            <input
+              id="auth-email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              inputmode="email"
+              placeholder="name@example.com"
+              required
+            >
+            <button id="auth-submit" class="memo-button primary wide" type="submit">发送登录邮件</button>
+          </form>
+
+          <p id="auth-message" class="memo-message" aria-live="polite" hidden></p>
+          <p class="memo-auth-footnote">不会在此页面存储密码。登录会话由 Supabase Auth 管理。</p>
+        </div>
+      </section>
+
+      <section id="app-view" class="memo-workspace" hidden>
+        <aside class="memo-sidebar" aria-label="备忘录列表">
+          <div class="memo-sidebar-head">
+            <div>
+              <p class="memo-eyebrow">My notes</p>
+              <h1>备忘录 <span id="note-count" class="memo-count">0</span></h1>
+            </div>
+            <button id="new-note" class="memo-button primary compact" type="button">新建</button>
+          </div>
+
+          <label class="memo-search">
+            <span class="sr-only">搜索备忘录</span>
+            <input id="memo-search" type="search" placeholder="搜索标题、正文或标签">
+          </label>
+
+          <ul id="note-list" class="memo-list"></ul>
+
+          <div class="memo-sidebar-foot">
+            <button id="import-notes" class="memo-button ghost compact" type="button">导入 JSON</button>
+            <button id="export-notes" class="memo-button ghost compact" type="button">导出 JSON</button>
+            <input id="import-file" type="file" accept="application/json,.json" hidden>
+          </div>
+        </aside>
+
+        <section class="memo-main">
+          <div class="memo-syncbar" aria-live="polite">
+            <div>
+              <span id="sync-status">已同步</span>
+              <span id="pending-badge" class="memo-pending-badge" hidden></span>
+            </div>
+            <button id="sync-now" class="memo-button ghost compact" type="button">立即同步</button>
+          </div>
+
+          <div id="editor-empty" class="memo-editor-empty">
+            <div>
+              <p class="memo-empty-mark">M</p>
+              <h2>记录下一件事</h2>
+              <p>新建一条备忘录，内容会自动保存并同步到其他浏览器。</p>
+              <button id="empty-new-note" class="memo-button primary" type="button">新建备忘录</button>
+            </div>
+          </div>
+
+          <article id="memo-editor" class="memo-editor" hidden>
+            <header class="memo-editor-head">
+              <div class="memo-editor-fields">
+                <label for="note-title" class="sr-only">标题</label>
+                <input id="note-title" class="memo-title-input" type="text" maxlength="200" placeholder="无标题备忘录">
+                <label for="note-tags" class="sr-only">标签</label>
+                <input id="note-tags" class="memo-tags-input" type="text" placeholder="标签，用逗号分隔">
+                <span id="note-updated-at" class="memo-updated-at"></span>
+              </div>
+              <div class="memo-editor-actions">
+                <div class="memo-mode-switch" role="group" aria-label="编辑模式">
+                  <button id="edit-mode" type="button" aria-pressed="true">编辑</button>
+                  <button id="preview-mode" type="button" aria-pressed="false">预览</button>
+                </div>
+                <button id="delete-note" class="memo-button danger compact" type="button">删除</button>
+              </div>
+            </header>
+
+            <label for="note-content" class="sr-only">Markdown 正文</label>
+            <textarea
+              id="note-content"
+              class="memo-content-input"
+              maxlength="2000000"
+              spellcheck="true"
+              placeholder="使用 Markdown 记录想法……"
+            ></textarea>
+            <section id="note-preview" class="memo-preview markdown-body" aria-label="Markdown 预览" hidden></section>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <div id="memo-toast" class="memo-toast" role="status" aria-live="polite" hidden></div>
+    <script type="module" src="/assets/memo/memo-app.js?v=20260810a"></script>
+  </body>
+</html>
