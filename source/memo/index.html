@@ -16,8 +16,8 @@ comments: false
       content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'"
     >
     <title>Memo | Dezhonger</title>
-    <link rel="stylesheet" href="/assets/memo/memo.css?v=20260810a">
-    <script src="/assets/memo/memo-config.js?v=20260810a"></script>
+    <link rel="stylesheet" href="/assets/memo/memo.css?v=20260810b">
+    <script src="/assets/memo/memo-config.js?v=20260810b"></script>
   </head>
   <body>
     <main class="memo-shell">
@@ -64,7 +64,7 @@ comments: false
         <div class="memo-gate-card auth-card">
           <p class="memo-eyebrow">Private workspace</p>
           <h1>登录备忘录</h1>
-          <p>使用已授权邮箱接收一次性登录链接。在需要使用备忘录的浏览器中打开邮件链接，即可登录并同步。</p>
+          <p>使用已授权邮箱和密码登录。也可以发送一次性登录链接，但邮件方式受 Supabase 发送额度限制。</p>
 
           <form id="auth-form" class="memo-auth-form">
             <label for="auth-email">邮箱</label>
@@ -77,11 +77,22 @@ comments: false
               placeholder="name@example.com"
               required
             >
-            <button id="auth-submit" class="memo-button primary wide" type="submit">发送登录邮件</button>
+            <label for="auth-password">密码</label>
+            <input
+              id="auth-password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              minlength="6"
+              placeholder="输入 Supabase 用户密码"
+              required
+            >
+            <button id="auth-submit" class="memo-button primary wide" type="submit">邮箱密码登录</button>
+            <button id="auth-magic-link" class="memo-button ghost wide" type="button">发送登录邮件</button>
           </form>
 
           <p id="auth-message" class="memo-message" aria-live="polite" hidden></p>
-          <p class="memo-auth-footnote">不会在此页面存储密码。登录会话由 Supabase Auth 管理。</p>
+          <p class="memo-auth-footnote">密码通过 HTTPS 直接提交给 Supabase Auth，本站不会单独保存密码。</p>
         </div>
       </section>
 
@@ -160,6 +171,6 @@ comments: false
     </main>
 
     <div id="memo-toast" class="memo-toast" role="status" aria-live="polite" hidden></div>
-    <script type="module" src="/assets/memo/memo-app.js?v=20260810a"></script>
+    <script type="module" src="/assets/memo/memo-app.js?v=20260810b"></script>
   </body>
 </html>

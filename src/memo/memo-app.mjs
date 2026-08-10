@@ -31,7 +31,9 @@ const elements = {
   appView: document.querySelector('#app-view'),
   authForm: document.querySelector('#auth-form'),
   authEmail: document.querySelector('#auth-email'),
+  authPassword: document.querySelector('#auth-password'),
   authSubmit: document.querySelector('#auth-submit'),
+  authMagicLink: document.querySelector('#auth-magic-link'),
   authMessage: document.querySelector('#auth-message'),
   accountEmail: document.querySelector('#account-email'),
   signOut: document.querySelector('#sign-out'),
@@ -775,12 +777,51 @@ async function importNotes(file) {
   flushPendingOperations().catch(console.error)
 }
 
-async function requestSignIn(event) {
+function setAuthBusy(busy) {
+  elements.authSubmit.disabled = busy
+  elements.authMagicLink.disabled = busy
+}
+
+function authErrorMessage(error, fallbackMessage) {
+  if (error?.code === 'invalid_credentials') return '邮箱或密码不正确。'
+  if (error?.code === 'email_not_confirmed') return '该邮箱尚未确认，请先在 Supabase 中确认用户。'
+  if (error?.code === 'over_email_send_rate_limit') {
+    return 'Supabase 登录邮件额度已用完，请稍后重试或直接使用密码登录。'
+  }
+  if (/not authorized/i.test(error?.message || '')) {
+    return '该邮箱不在 Supabase 默认邮件服务的授权收件人范围内，请使用密码登录。'
+  }
+  return fallbackMessage
+}
+
+async function signInWithPassword(event) {
   event.preventDefault()
   const email = elements.authEmail.value.trim()
-  if (!email) return
+  const password = elements.authPassword.value
+  if (!email || !password) return
 
-  elements.authSubmit.disabled = true
+  setAuthBusy(true)
+  setAuthMessage('正在登录…')
+  try {
+    window.sessionStorage.setItem(`${STORAGE_PREFIX}:login-email`, email)
+    const { error } = await state.client.auth.signInWithPassword({ email, password })
+    if (error) throw error
+
+    elements.authPassword.value = ''
+    setAuthMessage('登录成功，正在加载备忘录…', 'success')
+  } catch (error) {
+    console.error(error)
+    setAuthMessage(authErrorMessage(error, '登录失败，请稍后重试。'), 'danger')
+  } finally {
+    setAuthBusy(false)
+  }
+}
+
+async function requestMagicLink() {
+  if (!elements.authEmail.reportValidity()) return
+  const email = elements.authEmail.value.trim()
+
+  setAuthBusy(true)
   setAuthMessage('正在发送登录邮件…')
   try {
     window.sessionStorage.setItem(`${STORAGE_PREFIX}:login-email`, email)
@@ -797,9 +838,9 @@ async function requestSignIn(event) {
     setAuthMessage('登录邮件已发送。请在需要使用备忘录的浏览器中打开邮件里的登录链接。', 'success')
   } catch (error) {
     console.error(error)
-    setAuthMessage('发送失败。请确认邮箱已由站点管理员创建，然后重试。', 'danger')
+    setAuthMessage(authErrorMessage(error, '发送失败，请确认邮箱已由站点管理员创建。'), 'danger')
   } finally {
-    elements.authSubmit.disabled = false
+    setAuthBusy(false)
   }
 }
 
@@ -850,7 +891,8 @@ function switchMode(mode) {
 }
 
 function bindEvents() {
-  elements.authForm.addEventListener('submit', requestSignIn)
+  elements.authForm.addEventListener('submit', signInWithPassword)
+  elements.authMagicLink.addEventListener('click', requestMagicLink)
   elements.signOut.addEventListener('click', signOut)
   elements.syncNow.addEventListener('click', syncNow)
   elements.newNote.addEventListener('click', () => createNewNote().catch(console.error))
