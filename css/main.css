@@ -2496,6 +2496,9 @@ ul.breadcrumb li:last-child {
   border-bottom-color: #111;
   color: #111;
 }
+.utterances {
+  max-width: unset;
+}
 mjx-container[jax='CHTML'][display='true'],
 .has-jax {
   overflow: auto hidden;
@@ -2667,7 +2670,7 @@ mjx-container[display='true'] + br {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #e0ff45;
+  background: #16ffa2;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
