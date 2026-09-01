@@ -5,7 +5,7 @@
 # Site
 title: Dezhonger
 subtitle: ''
-description: ''
+description: "Personal blog by Dezhonger."
 keywords:
 author: Dezhonger
 language: en
@@ -98,6 +98,15 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
+feed:
+  enable: true
+  type: atom
+  path: atom.xml
+  limit: 20
+  content: true
+  order_by: -date
+  autodiscovery: true
+
 theme: next
 
 # Deployment

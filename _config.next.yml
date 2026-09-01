@@ -20,3 +20,4 @@ menu:
   tags: /tags/ || fa fa-tags
   categories: /categories/ || fa fa-th
   archives: /archives/ || fa fa-archive
+  RSS: /atom.xml || fa fa-rss
