@@ -2,6 +2,12 @@ custom_file_path:
   style: source/_data/styles.styl
   bodyEnd: source/_data/body-end.njk
 
+favicon:
+  small: /favicon-16x16.png?v=20261012
+  medium: /favicon-32x32.png?v=20261012
+  apple_touch_icon: /apple-touch-icon.png?v=20261012
+  safari_pinned_tab: false
+
 comments:
   active: utterances
   lazyload: true
