@@ -11,7 +11,7 @@
       desc: `
         <ul>
           <li>支持 <code>//</code> 和 <code>/* ... */</code></li>
-          <li>“删除由注释产生的空行”只会删真正的注释行，不会删你原来写的空行</li>
+          <li>始终去除代码开头的空行；“删除由注释产生的空行”只会删真正的注释行，保留代码中间原有的空行</li>
         </ul>
       `,
     },
@@ -195,7 +195,7 @@
     if (state.currentLang === 'cpp' && opt.replaceLongLong) {
       out = replaceCppLongLongTypes(out)
     }
-    writeOutput(out)
+    writeOutput(out.replace(/^(?:[ \t]*\r?\n)+/, ''))
   }
 
   function clearText() {
