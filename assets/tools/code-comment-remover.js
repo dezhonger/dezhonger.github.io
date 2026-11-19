@@ -79,6 +79,7 @@
     btnProcess: document.getElementById('process-btn'),
     btnCopy: document.getElementById('copy-btn'),
     btnClear: document.getElementById('clear-btn'),
+    btnBackToTop: document.getElementById('back-to-top-btn'),
     keepBlockWrap: document.getElementById('keep-block-wrap'),
     replaceLongLongWrap: document.getElementById('replace-long-long-wrap'),
     removeFuncBlankWrap: document.getElementById('remove-func-blank-wrap'),
@@ -254,6 +255,25 @@
       })
   }
 
+  function editorsScrolled() {
+    return [state.inputEditor, state.outputEditor].some(function (editor) {
+      return editor && editor.getScrollTop() > 0
+    })
+  }
+
+  function updateBackToTop() {
+    refs.btnBackToTop.hidden = !(window.scrollY > 200 || editorsScrolled())
+  }
+
+  // 回到顶部：页面滚回顶部，两个编辑器也都滚回第一行
+  function backToTop() {
+    window.scrollTo(0, 0)
+    ;[state.inputEditor, state.outputEditor].forEach(function (editor) {
+      if (editor) editor.setScrollPosition({ scrollTop: 0, scrollLeft: 0 })
+    })
+    updateBackToTop()
+  }
+
   function bindEvents() {
     refs.languageSelect.addEventListener('change', function (event) {
       state.currentLang = event.target.value
@@ -272,6 +292,8 @@
     refs.btnProcess.addEventListener('click', doProcess)
     refs.btnCopy.addEventListener('click', copyResult)
     refs.btnClear.addEventListener('click', clearText)
+    refs.btnBackToTop.addEventListener('click', backToTop)
+    window.addEventListener('scroll', updateBackToTop, { passive: true })
   }
 
   function initEditors(monaco) {
@@ -300,6 +322,9 @@
       theme: 'vs',
       readOnly: true,
     })
+
+    state.inputEditor.onDidScrollChange(updateBackToTop)
+    state.outputEditor.onDidScrollChange(updateBackToTop)
 
     window.requestAnimationFrame(function () {
       state.inputEditor.layout()
