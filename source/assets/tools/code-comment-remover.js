@@ -12,6 +12,7 @@
         <ul>
           <li>支持 <code>//</code> 和 <code>/* ... */</code></li>
           <li>始终去除代码开头的空行；“删除由注释产生的空行”只会删真正的注释行，保留代码中间原有的空行</li>
+          <li>“去除函数内空行”会删除函数体（含其中的 lambda、嵌套块）里的所有空行，保留函数之间、类成员之间的空行；字符串内的空行不受影响</li>
         </ul>
       `,
     },
@@ -63,6 +64,7 @@
       removeCommentLines: true,
       keepLineComment: false,
       keepBlockComment: false,
+      removeFuncBlankLines: false,
       replaceLongLong: true,
     },
   }
@@ -79,6 +81,7 @@
     btnClear: document.getElementById('clear-btn'),
     keepBlockWrap: document.getElementById('keep-block-wrap'),
     replaceLongLongWrap: document.getElementById('replace-long-long-wrap'),
+    removeFuncBlankWrap: document.getElementById('remove-func-blank-wrap'),
   }
 
   const checkboxKeys = [
@@ -87,6 +90,7 @@
     'removeCommentLines',
     'keepLineComment',
     'keepBlockComment',
+    'removeFuncBlankLines',
     'replaceLongLong',
   ]
 
@@ -127,6 +131,10 @@
     return ['cpp', 'golang', 'csharp', 'html', 'sql'].includes(state.currentLang)
   }
 
+  function showRemoveFuncBlank() {
+    return ['cpp', 'golang', 'csharp', 'python'].includes(state.currentLang)
+  }
+
   function showReplaceLongLong() {
     return state.currentLang === 'cpp'
   }
@@ -136,6 +144,7 @@
     refs.banner.innerHTML = config ? config.desc : ''
     refs.keepBlockWrap.hidden = !showKeepBlock()
     refs.replaceLongLongWrap.hidden = !showReplaceLongLong()
+    refs.removeFuncBlankWrap.hidden = !showRemoveFuncBlank()
   }
 
   function setEditorLanguages() {
@@ -194,6 +203,12 @@
     }
     if (state.currentLang === 'cpp' && opt.replaceLongLong) {
       out = replaceCppLongLongTypes(out)
+    }
+    if (opt.removeFuncBlankLines && showRemoveFuncBlank()) {
+      out =
+        state.currentLang === 'python'
+          ? removePythonFunctionBlankLines(out)
+          : removeBraceFunctionBlankLines(out)
     }
     writeOutput(out.replace(/^(?:[ \t]*\r?\n)+/, ''))
   }
@@ -327,6 +342,175 @@
           .replace(/\blong\s+long\b/g, 'LL')
       })
       .join('\n')
+  }
+
+  // 判断 `{` 之前的头部文本是否像函数（含 lambda / Go func / 方法）定义
+  function looksLikeFunctionHeader(header) {
+    const text = header.replace(/@\w+(?:\.\w+)*(?:\([^)]*\))?/g, ' ')
+    if (text.indexOf('(') === -1) return false
+    const typeKeyword = /\b(?:class|struct|interface|enum|namespace|union|record)\b/g
+    let lastEnd = -1
+    let match
+    while ((match = typeKeyword.exec(text))) {
+      lastEnd = match.index + match[0].length
+    }
+    return lastEnd === -1 || text.indexOf('(', lastEnd) !== -1
+  }
+
+  // C 风格（C/C++/Java/JS/TS/Go/C#）：删除位于函数体内的空行
+  function removeBraceFunctionBlankLines(src) {
+    const lines = src.split('\n')
+    const stack = []
+    const out = []
+    let header = ''
+    let mode = 'code' // code | block | string
+    let quote = ''
+
+    function insideFunction() {
+      return stack.length > 0 && stack[stack.length - 1]
+    }
+
+    for (const line of lines) {
+      if (line.trim() === '') {
+        if (mode === 'string' || !(mode === 'code' && insideFunction())) {
+          out.push(line)
+        }
+        continue
+      }
+      out.push(line)
+      if (mode === 'code' && /^\s*#/.test(line)) {
+        header = ''
+        continue
+      }
+
+      let i = 0
+      while (i < line.length) {
+        const ch = line[i]
+        const two = line.slice(i, i + 2)
+        if (mode === 'block') {
+          if (two === '*/') {
+            mode = 'code'
+            i += 2
+          } else {
+            i++
+          }
+          continue
+        }
+        if (mode === 'string') {
+          if (ch === '\\') {
+            i += 2
+            continue
+          }
+          if (ch === quote) mode = 'code'
+          i++
+          continue
+        }
+        if (two === '//') break
+        if (two === '/*') {
+          mode = 'block'
+          i += 2
+          continue
+        }
+        if (ch === "'") {
+          const prevToken = /[0-9A-Za-z_]+$/.exec(line.slice(0, i))
+          if (prevToken && /^[0-9]/.test(prevToken[0])) {
+            i++ // C++14 数字分隔符，如 1'000'000
+            continue
+          }
+        }
+        if (ch === '"' || ch === "'" || ch === '`') {
+          mode = 'string'
+          quote = ch
+          header += ' "" '
+          i++
+          continue
+        }
+        if (ch === '{') {
+          stack.push(insideFunction() || looksLikeFunctionHeader(header))
+          header = ''
+        } else if (ch === '}') {
+          stack.pop()
+          header = ''
+        } else if (ch === ';') {
+          header = ''
+        } else {
+          header += ch
+        }
+        i++
+      }
+      // 普通字符串不跨行；只有反引号（JS 模板串 / Go 原始字符串）可以跨行
+      if (mode === 'string' && quote !== '`') mode = 'code'
+      header += '\n'
+    }
+    return out.join('\n')
+  }
+
+  // Python：删除 def 函数体内的空行（按缩进判断，三引号字符串内的空行保留）
+  function removePythonFunctionBlankLines(src) {
+    const lines = src.split('\n')
+    const out = []
+    const defIndents = []
+    let pending = []
+    let triple = ''
+
+    function indentOf(line) {
+      return /^[ \t]*/.exec(line)[0].replace(/\t/g, '    ').length
+    }
+
+    function scanTriple(line) {
+      let quote = ''
+      let i = 0
+      while (i < line.length) {
+        const ch = line[i]
+        const three = line.slice(i, i + 3)
+        if (triple || quote) {
+          if (ch === '\\') {
+            i += 2
+            continue
+          }
+          if (triple && three === triple) {
+            triple = ''
+            i += 3
+            continue
+          }
+          if (quote && ch === quote) quote = ''
+          i++
+          continue
+        }
+        if (ch === '#') break
+        if (three === '"""' || three === "'''") {
+          triple = three
+          i += 3
+          continue
+        }
+        if (ch === '"' || ch === "'") quote = ch
+        i++
+      }
+    }
+
+    for (const line of lines) {
+      if (triple) {
+        out.push(...pending, line)
+        pending = []
+        scanTriple(line)
+        continue
+      }
+      if (line.trim() === '') {
+        pending.push(line)
+        continue
+      }
+      const indent = indentOf(line)
+      while (defIndents.length && defIndents[defIndents.length - 1] >= indent) {
+        defIndents.pop()
+      }
+      if (!defIndents.length) out.push(...pending)
+      pending = []
+      out.push(line)
+      if (/^\s*(?:async\s+)?def\b/.test(line)) defIndents.push(indent)
+      scanTriple(line)
+    }
+    out.push(...pending)
+    return out.join('\n')
   }
 
   function stripCppLikeByLine(src, opt) {
