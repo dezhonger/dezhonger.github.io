@@ -12,7 +12,7 @@
         <ul>
           <li>支持 <code>//</code> 和 <code>/* ... */</code></li>
           <li>始终去除代码开头的空行；“删除由注释产生的空行”只会删真正的注释行，保留代码中间原有的空行</li>
-          <li>“去除函数内空行”会删除函数体（含其中的 lambda、嵌套块）里的所有空行，保留函数之间、类成员之间的空行；字符串内的空行不受影响</li>
+          <li>“去除函数内空行”会删除函数体（含其中的 lambda、嵌套块）里的所有空行，以及顶层连续单行声明（<code>#include</code>、<code>using</code>、<code>const</code> 数组等）之间的空行；保留函数之间、类成员之间的空行，字符串内的空行不受影响</li>
         </ul>
       `,
     },
@@ -64,7 +64,7 @@
       removeCommentLines: true,
       keepLineComment: false,
       keepBlockComment: false,
-      removeFuncBlankLines: false,
+      removeFuncBlankLines: true,
       replaceLongLong: true,
     },
   }
@@ -208,7 +208,7 @@
       out =
         state.currentLang === 'python'
           ? removePythonFunctionBlankLines(out)
-          : removeBraceFunctionBlankLines(out)
+          : removeBraceFunctionBlankLines(out, state.currentLang === 'cpp')
     }
     writeOutput(out.replace(/^(?:[ \t]*\r?\n)+/, ''))
   }
@@ -357,14 +357,18 @@
     return lastEnd === -1 || text.indexOf('(', lastEnd) !== -1
   }
 
-  // C 风格（C/C++/Java/JS/TS/Go/C#）：删除位于函数体内的空行
-  function removeBraceFunctionBlankLines(src) {
+  // C 风格（C/C++/Java/JS/TS/Go/C#）：删除位于函数体内的空行。
+  // mergeTopLevelDecls 为 true 时，顶层连续的单行声明（#include、using、
+  // typedef、const 数组等以 ; 结尾的语句）之间的空行也一并删除。
+  function removeBraceFunctionBlankLines(src, mergeTopLevelDecls) {
     const lines = src.split('\n')
     const stack = []
     const out = []
     let header = ''
     let mode = 'code' // code | block | string
     let quote = ''
+    let pendingBlanks = []
+    let prevTopLevelDecl = false
 
     function insideFunction() {
       return stack.length > 0 && stack[stack.length - 1]
@@ -372,76 +376,95 @@
 
     for (const line of lines) {
       if (line.trim() === '') {
-        if (mode === 'string' || !(mode === 'code' && insideFunction())) {
+        if (mode === 'code' && stack.length === 0) {
+          pendingBlanks.push(line)
+        } else if (mode === 'string' || !(mode === 'code' && insideFunction())) {
           out.push(line)
         }
         continue
       }
+      const startsTopLevel = mode === 'code' && stack.length === 0
+      const isPreprocessor = mode === 'code' && /^\s*#/.test(line)
+      const lineIndex = out.length
       out.push(line)
-      if (mode === 'code' && /^\s*#/.test(line)) {
+      if (isPreprocessor) {
         header = ''
-        continue
+      } else {
+        let i = 0
+        while (i < line.length) {
+          const ch = line[i]
+          const two = line.slice(i, i + 2)
+          if (mode === 'block') {
+            if (two === '*/') {
+              mode = 'code'
+              i += 2
+            } else {
+              i++
+            }
+            continue
+          }
+          if (mode === 'string') {
+            if (ch === '\\') {
+              i += 2
+              continue
+            }
+            if (ch === quote) mode = 'code'
+            i++
+            continue
+          }
+          if (two === '//') break
+          if (two === '/*') {
+            mode = 'block'
+            i += 2
+            continue
+          }
+          if (ch === "'") {
+            const prevToken = /[0-9A-Za-z_]+$/.exec(line.slice(0, i))
+            if (prevToken && /^[0-9]/.test(prevToken[0])) {
+              i++ // C++14 数字分隔符，如 1'000'000
+              continue
+            }
+          }
+          if (ch === '"' || ch === "'" || ch === '`') {
+            mode = 'string'
+            quote = ch
+            header += ' "" '
+            i++
+            continue
+          }
+          if (ch === '{') {
+            stack.push(insideFunction() || looksLikeFunctionHeader(header))
+            header = ''
+          } else if (ch === '}') {
+            stack.pop()
+            header = ''
+          } else if (ch === ';') {
+            header = ''
+          } else {
+            header += ch
+          }
+          i++
+        }
+        // 普通字符串不跨行；只有反引号（JS 模板串 / Go 原始字符串）可以跨行
+        if (mode === 'string' && quote !== '`') mode = 'code'
+        header += '\n'
       }
 
-      let i = 0
-      while (i < line.length) {
-        const ch = line[i]
-        const two = line.slice(i, i + 2)
-        if (mode === 'block') {
-          if (two === '*/') {
-            mode = 'code'
-            i += 2
-          } else {
-            i++
-          }
-          continue
+      const trimmed = line.trim()
+      const isTopLevelDecl =
+        startsTopLevel &&
+        mode === 'code' &&
+        stack.length === 0 &&
+        (isPreprocessor || (/;$/.test(trimmed) && !/^}/.test(trimmed)))
+      if (pendingBlanks.length) {
+        if (!(mergeTopLevelDecls && prevTopLevelDecl && isTopLevelDecl)) {
+          out.splice(lineIndex, 0, ...pendingBlanks)
         }
-        if (mode === 'string') {
-          if (ch === '\\') {
-            i += 2
-            continue
-          }
-          if (ch === quote) mode = 'code'
-          i++
-          continue
-        }
-        if (two === '//') break
-        if (two === '/*') {
-          mode = 'block'
-          i += 2
-          continue
-        }
-        if (ch === "'") {
-          const prevToken = /[0-9A-Za-z_]+$/.exec(line.slice(0, i))
-          if (prevToken && /^[0-9]/.test(prevToken[0])) {
-            i++ // C++14 数字分隔符，如 1'000'000
-            continue
-          }
-        }
-        if (ch === '"' || ch === "'" || ch === '`') {
-          mode = 'string'
-          quote = ch
-          header += ' "" '
-          i++
-          continue
-        }
-        if (ch === '{') {
-          stack.push(insideFunction() || looksLikeFunctionHeader(header))
-          header = ''
-        } else if (ch === '}') {
-          stack.pop()
-          header = ''
-        } else if (ch === ';') {
-          header = ''
-        } else {
-          header += ch
-        }
-        i++
+        pendingBlanks = []
       }
-      // 普通字符串不跨行；只有反引号（JS 模板串 / Go 原始字符串）可以跨行
-      if (mode === 'string' && quote !== '`') mode = 'code'
-      header += '\n'
+      prevTopLevelDecl = isTopLevelDecl
     }
+    out.push(...pendingBlanks)
     return out.join('\n')
   }
 

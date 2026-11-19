@@ -66,6 +66,10 @@
               <input id="opt-removeCommentLines" type="checkbox">
               删除由注释产生的空行
             </label>
+            <label class="tool-option" id="remove-func-blank-wrap">
+              <input id="opt-removeFuncBlankLines" type="checkbox">
+              去除函数内空行
+            </label>
             <label class="tool-option">
               <input id="opt-keepLineComment" type="checkbox">
               保留整行注释
@@ -73,10 +77,6 @@
             <label class="tool-option" id="keep-block-wrap">
               <input id="opt-keepBlockComment" type="checkbox">
               保留块注释
-            </label>
-            <label class="tool-option" id="remove-func-blank-wrap">
-              <input id="opt-removeFuncBlankLines" type="checkbox">
-              去除函数内空行
             </label>
             <label class="tool-option" id="replace-long-long-wrap">
               <input id="opt-replaceLongLong" type="checkbox">
@@ -127,6 +127,6 @@
 
     <script src="/vendor/monaco/vs/loader.js"></script>
     <script src="/assets/tools/code-comment-toolkit.js?v=20260809a"></script>
-    <script src="/assets/tools/code-comment-remover.js?v=20261119a"></script>
+    <script src="/assets/tools/code-comment-remover.js?v=20261119b"></script>
   </body>
 </html>
